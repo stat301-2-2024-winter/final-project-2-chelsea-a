@@ -20,58 +20,82 @@ reference-location: margin
 citation-location: margin
 ---
 
-::: {.callout-important}
-## Memo format
-
-Like all other submissions for this course, we expect the memo to be neat and well organized. This a template to get you started. 
-
-You should make this document your own. To help with this we have added a date to the yaml above (good whenever writing memos). You should remove this block when making this document your own.
-
-:::
-
 ::: {.callout-tip icon=false}
 
 ## Github Repo Link
-
-To link to your github **repo**sitory, appropriately edit the example link below. Meaning replace `https://your-github-repo-url` with your github repo url. Suggest verifying the link works before submitting.
-
-[https://your-github-repo-url](https://github.com/stat301-2-2024-winter/final-project-2-chelsea-a)
+[my github repo url](https://github.com/stat301-2-2024-winter/final-project-2-chelsea-a)
 
 :::
 
-::: {.callout-warning}
-GitHub (free account) cannot store large files. If you try to commit and push a large dataset you will have an ERROR! Any file over 100 MB (100,000 KB) needs to be added to the `.gitignore` file BEFORE committing.
-
-**We may need to do that for files in your final project!**
-:::
 
 ## Data source
 
-My data came from Kaggle and is called [Most Streamed Spotify Songs 2023](https://www.kaggle.com/datasets/nelgiriyewithana/top-spotify-songs-2023). In the dataaset there is one csv file called spotify-2023.csv.
+My data came from the UC Irvine Machine Learning Repository and is called [Predict Students' Dropout and Academic Success](https://archive.ics.uci.edu/dataset/697/predict+students+dropout+and+academic+success). This data is from one higher education institution (acquired from several disjoint databases) related to students enrolled in different undergraduate degrees, such as agronomy, design, education, nursing, journalism, management, social service, and technologies. The dataset includes information known at the time of student enrollment (academic path, demographics, and socioeconomic factors) and the student's academic performance at the end of the first and second semesters.
+
+The dataset was created in a project that aims to contribute to the reduction of academic dropout and failure in higher education, by using machine learning techniques to identify students at risk at an early stage of their academic path, so that strategies to support them can be put into place. 
+
+The dataset includes information known at the time of student enrollment – academic path, demographics, and social-economic factors. 
+
+The problem is formulated as a three category classification task (dropout, enrolled, and graduate) at the end of the normal duration of the course and there is a strong imbalance towards one of the classes. I will be using the data to build classification models to predict students' dropout and academic success. Where the higher education institution is located and the kinds of the institution are not disclosed.
+
+This dataset is relatively small with 4,424 observations. This dataset has 37 variables 36 of which are predictor variables. There are different types of predictors — multiple numerical and categorical predictor variables. There is a mix of categorical and numeric variables with 10-factor variables. 
 
 ## Why this data
 
-I chose this data because I am a very active listener of Spotify and in 2023, my Spotify wrapped stated that I streamed 45,546 minutes of music.^[another footnote] I am a big fan of music and like discovering different kinds of music. I like to attend concerts and sometimes festivals in my free time.
+I chose this data because I am a social policy major and am interested in education policy. I thought that this prediction dataset would be ideal for me because I have previously done a project on education outcomes as well. 
 
 ## Data quality & complexity check
 ```{r}
+#| echo: false 
 #| label: load-packages-and-data
+
 # load packages
 library(tidyverse)
 library(tidymodels)
 library(here)
+
+# handle common conflicts
 tidymodels_prefer()
+
 # load data
-hotels <- read_csv(here("data/hotel_bookings.csv"))
+outcomes_data <- read_delim(here("data/data.csv"), delim=";") |> 
+  janitor::clean_names() |> 
+  rename(nationality = nacionality) |> 
+  mutate(marital_status = factor(marital_status),
+         daytime_evening_attendance = factor(daytime_evening_attendance),
+         displaced = factor(displaced),
+         educational_special_needs = factor(educational_special_needs),
+         debtor = factor(debtor),
+         tuition_fees_up_to_date = factor(tuition_fees_up_to_date),
+         gender = factor(gender),
+         scholarship_holder = factor(scholarship_holder),
+         international = factor(international),
+         target = factor(target)
+         )
 
+# initial skim
+# outcomes_data |> skimr::skim_without_charts()
+ggplot(outcomes_data, aes(target)) +
+  geom_bar(fill = "skyblue", color = "black") +
+  theme_minimal() +
+  labs(x = "Target Variable", y = "Count", title = "Distribution of Target Variable")
+
+outcomes_data |> 
+  count(target) |> 
+  knitr::kable()
+
+# outcomes_data |> naniar::miss_var_summary() |> 
+#   filter(n_miss > 0)
 ```
-This dataset has 22 variables.
-
+Upon doing a data quality check I found that the data had zero missingness. Of the three categories of the target variable, I found that there is a greater skew toward one variable "Graduate" and a lesser skew towards "Enrolled". The initial data check shows that the data is very complete. I changed 10 of the categorical variables to factors.
 
 ## Potential data issues
 
-Blah blah blah
+The skew towards graduate within the target variable could affect my predictions in terms of how I split the data and its accuracy.
 
-## Misc
+I cleaned the names using naniar after initially loading the data. There was a misspelling of "nacionality" which I correctly renamed to "nationality".
 
-Blah Blah
+## References
+M.V.Martins, D. Tolledo, J. Machado, L. M.T. Baptista, V.Realinho. (2021) "Early prediction of student’s performance in higher education: a case study" Trends and Applications in Information Systems and Technologies, vol.1, in Advances in Intelligent Systems and Computing series. Springer. DOI: 10.1007/978-3-030-72657-7_16
+
+This dataset is supported by the program SATDAP - Capacitação da Administração Pública under grant POCI-05-5762-FSE-000191, Portugal.
