@@ -1,5 +1,6 @@
-# L07 Baseline Models: Exercise 1 ----
 # Initial data checks & data splitting
+
+# Random process in script, seed set right before it
 
 # load packages ----
 library(tidyverse)
