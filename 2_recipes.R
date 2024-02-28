@@ -17,7 +17,7 @@ recipe(target ~ ., data = student_train) |>
   step_normalize(all_numeric_predictors())
 
 # build rf recipe ----
-aba_recipe_rf <- recipe(target ~ ., data = student_train) |>
+recipe(target ~ ., data = student_train) |>
   step_dummy(all_nominal_predictors(), one_hot = TRUE) |> 
   step_center(all_predictors()) |> 
   step_scale(all_predictors())
