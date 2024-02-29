@@ -27,72 +27,39 @@ citation-location: margin
 
 :::
 
-## Data source
+## Data Overview
 
-My data came from the UC Irvine Machine Learning Repository and is called [Predict Students' Dropout and Academic Success](https://archive.ics.uci.edu/dataset/697/predict+students+dropout+and+academic+success). This data is from one higher education institution (acquired from several disjoint databases) related to students enrolled in different undergraduate degrees, such as agronomy, design, education, nursing, journalism, management, social service, and technologies. The dataset includes information known at the time of student enrollment (academic path, demographics, and socioeconomic factors) and the student's academic performance at the end of the first and second semesters.
+My data came from the UC Irvine Machine Learning Repository and is called [Predict Students' Dropout and Academic Success](https://archive.ics.uci.edu/dataset/697/predict+students+dropout+and+academic+success). This data is from one higher education institution (acquired from several disjoint databases) related to students enrolled in different undergraduate degrees. The dataset includes information known at the time of student enrollment and the student's academic performance at the end of the first and second semesters. The dataset is formulated as a three-category classification task with the target variable being either dropout, enrolled, or graduate. Therefore, I will be predicting whether a student drops out of college with this particular data.
 
-The dataset was created in a project that aims to contribute to the reduction of academic dropout and failure in higher education, by using machine learning techniques to identify students at risk at an early stage of their academic path, so that strategies to support them can be put into place. 
+I decided to split the data 80/20 and make 10 folds out of the training data. So far I have fit a logistic model and a baseline logistic model on training data.
 
-The dataset includes information known at the time of student enrollment – academic path, demographics, and social-economic factors. 
+##  Models
+For my baseline model, I used a logistic regression model with categorical variables dummy encoded, numeric predictors normalized, and zero variance predictors removed.
 
-The problem is formulated as a three category classification task (dropout, enrolled, and graduate) at the end of the normal duration of the course and there is a strong imbalance towards one of the classes. I will be using the data to build classification models to predict students' dropout and academic success. Where the higher education institution is located and the kinds of the institution are not disclosed.
+I then made a second model that used a different recipe that included interactions. The interactions were between gender and semester grade as well as between marital status and semester grade. After I fit the model using training data.
 
-This dataset is relatively small with 4,424 observations. This dataset has 37 variables 36 of which are predictor variables. There are different types of predictors — multiple numerical and categorical predictor variables. There is a mix of categorical and numeric variables with 10 factor variables. 
 
-## Why this data
-
-I chose this data because I am a social policy major and am interested in education policy. I thought that this prediction dataset would be ideal for me because I have previously done a project on education outcomes as well. 
-
-## Data quality & complexity check
 ```{r}
-#| echo: false 
-#| label: load-packages-and-data
-
-# load packages
+#| label: log
+#| echo: false
 library(tidyverse)
-library(tidymodels)
 library(here)
 
-# handle common conflicts
-tidymodels_prefer()
-
-# load data
-student_data <- read_delim(here("data/data.csv"), delim=";") |> 
-  janitor::clean_names() |> 
-  rename(nationality = nacionality) |> 
-  mutate(marital_status = factor(marital_status),
-         daytime_evening_attendance = factor(daytime_evening_attendance),
-         displaced = factor(displaced),
-         educational_special_needs = factor(educational_special_needs),
-         debtor = factor(debtor),
-         tuition_fees_up_to_date = factor(tuition_fees_up_to_date),
-         gender = factor(gender),
-         scholarship_holder = factor(scholarship_holder),
-         international = factor(international),
-         target = factor(target)
-         )
-
-# initial skim
-# student_data |> skimr::skim_without_charts()
-ggplot(student_data, aes(target)) +
-  geom_bar(fill = "skyblue", color = "black") +
-  theme_minimal() +
-  labs(x = "Target Variable", y = "Count", title = "Distribution of Target Variable")
-
-student_data |> 
-  count(target) |> 
-  knitr::kable()
-
-# student_data |> naniar::miss_var_summary() |> 
-#   filter(n_miss > 0)
+read_csv(here("figures/accuracy.csv")) |> knitr::kable()
 ```
-Upon doing a data quality check I found that the data had zero missingness. Of the three categories of the target variable, I found that there is a greater skew toward one variable "Graduate" and a lesser skew towards "Enrolled". The initial data check shows that the data is very complete. I changed 10 of the categorical variables to factors.
+While the accuracy of the logistic regression model is slightly better than the accuracy of the baseline model, both models performed poorly at less than 40% accuracy.
 
-## Potential data issues
+## Plan
+I plan to fit my models on my training folds next time for increased accuracy. I will also make a random forest model with tuned hyperparameters as well. I plan to use other metrics besides accuracy such as roc_auc to assess metrics as well. 
 
-The skew towards graduate within the target variable could affect my predictions in terms of how I split the data and its accuracy.
+# Potential issues or concerns
+I find it a bit concerning that the accuracy is as low as it is.
 
-I cleaned the names using naniar after initially loading the data. There was a misspelling of "nacionality" which I correctly renamed to "nationality".
+At one point I threw an error stating that my target variable is not binary as it has three levels: dropout, enrolled, and graduate. I am wondering if this will be an issue further on. 
+
+I was unable to use predict() on my tuned random forest model due to it being a classification model and am not sure how to fix this.
+
+I was also unable to fit my logistic regression model on the folds and instead fit the models on training data. 
 
 ## References
 M.V.Martins, D. Tolledo, J. Machado, L. M.T. Baptista, V.Realinho. (2021) "Early prediction of student’s performance in higher education: a case study" Trends and Applications in Information Systems and Technologies, vol.1, in Advances in Intelligent Systems and Computing series. Springer. DOI: 10.1007/978-3-030-72657-7_16

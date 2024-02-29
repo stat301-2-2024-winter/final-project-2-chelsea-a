@@ -24,7 +24,7 @@ load(here("recipes/recipe_tree.rda"))
 rf_spec <- rand_forest(mtry = tune(),
                        trees = 200,
                        min_n = tune()) |>  
-  set_mode("regression")|> 
+  set_mode("classification")|> 
   set_engine("ranger")
 
 # define workflows ----
