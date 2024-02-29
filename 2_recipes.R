@@ -12,14 +12,27 @@ tidymodels_prefer()
 load(here("data_splits/student_train.rda"))
 
 # build lm recipe ----
-recipe(target ~ ., data = student_train) |> 
+recipe_lm <- recipe(target ~ ., data = student_train) |> 
   step_dummy(all_nominal_predictors()) |> 
-  step_normalize(all_numeric_predictors())
+  step_normalize(all_numeric_predictors()) |> 
+  step_interact(terms = ~ starts_with("gender_"):ends_with("_sem_grade")) |> 
+  step_interact(terms = ~ starts_with("marital_status_"):ends_with("_sem_grade"))
 
-# build rf recipe ----
-recipe(target ~ ., data = student_train) |>
+# build tree recipe ----
+recipe_tree <- recipe(target ~ ., data = student_train) |>
   step_dummy(all_nominal_predictors(), one_hot = TRUE) |> 
   step_center(all_predictors()) |> 
-  step_scale(all_predictors())
+  step_scale(all_predictors()) 
 
+recipe_tree |> 
+  prep() |> 
+  bake(new_data = NULL) |> 
+  glimpse()
 
+recipe_tree |> 
+  prep() |> 
+  bake(new_data = NULL) |> 
+  glimpse()
+
+save(recipe_lm, file = here("recipes/recipe_lm.rda"))
+save(recipe_tree, file = here("recipes/recipe_tree.rda"))

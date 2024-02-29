@@ -46,7 +46,6 @@ student_data <- read_delim(here("data/data.csv"), delim=";") |>
   )
 
 # initial skim
-# student_data |> skimr::skim_without_charts()
 ggplot(student_data, aes(target)) +
   geom_bar(fill = "skyblue", color = "black") +
   theme_minimal() +

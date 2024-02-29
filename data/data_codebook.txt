@@ -7,7 +7,7 @@ application_mode - how the student applied to the school (method/ phase)
 application_order - application order (between 0 - first choice; and 9 last choice)
 course - what degree the students are enrolled in (agronomy, design, education, nursing, journalism, management, social service, and technologies)
 daytime_evening_attendance - are they enrolled in daytime (1) or evening (0) attendance
-previous_qualification - the student's previous qualification ()
+previous_qualification - the student's previous qualification (education level)
 previous_qualification_grade - the grade of previous qualification (between 0 and 200)
 nationality - the nationality of the student 
 mothers_qualification - the mothers highest level of education 

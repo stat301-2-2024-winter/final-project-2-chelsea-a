@@ -1,5 +1,5 @@
 ---
-title: "Progress Memo 1"
+title: "Progress Memo 2"
 subtitle: |
   | Final Project 
   | Data Science 2 with R (STAT 301-2)
@@ -26,7 +26,6 @@ citation-location: margin
 [my github repo url](https://github.com/stat301-2-2024-winter/final-project-2-chelsea-a)
 
 :::
-
 
 ## Data source
 
