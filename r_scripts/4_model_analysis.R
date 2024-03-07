@@ -27,7 +27,7 @@ fit_log |>
 # fit_log |> collect_metrics()
 
 # looking at accuracy of models
-table <- null_fit |> 
+acc_table <- null_fit |> 
   collect_metrics() |> 
   mutate(model = "Null") |> 
   select(-n, -.config, -.estimator) |> 
@@ -42,7 +42,43 @@ tuned_rf |>
   slice_min(mean) |> 
   select(mean, std_err, .metric) |> 
   mutate(model = "Random Forest")
-)
+) |>
+  filter(.metric == "accuracy") |> 
+  arrange(mean) |> 
+  pivot_wider(names_from = .metric,
+              values_from = mean) |> 
+  select(`Model` = model,
+         `Accuracy` = accuracy,
+         `STD Error` = std_err)
+
+# looking at roc_auc
+roc_auc_tbl <- tuned_rf |> 
+  show_best("roc_auc") |> 
+  slice_min(mean) |> 
+  select(mean, std_err, .metric) |> 
+  mutate(model = "Random Forest") |> 
+  bind_rows(
+    nbayes_fit |> 
+      collect_metrics() |>
+      mutate(model = "Naive Bayes") |> 
+      select(-n, -.config, -.estimator)
+    ) |> 
+  bind_rows(null_fit |> 
+              collect_metrics() |>
+              mutate(model = "Null") |> 
+              select(-n, -.config, -.estimator)
+            ) |> 
+  filter(.metric == "roc_auc") |> 
+  arrange(mean) |> 
+  pivot_wider(names_from = .metric,
+              values_from = mean) |> 
+  select(`Model` = model,
+         roc_auc,
+         `STD Error` = std_err)
+
+acc_table |> knitr::kable()
+roc_auc_tbl |> knitr::kable()
+
 
 # extract predictions 
 pred_data_log <- predict(fit_log, student_train) 

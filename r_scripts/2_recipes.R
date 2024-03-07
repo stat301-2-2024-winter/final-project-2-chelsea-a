@@ -23,6 +23,7 @@ recipe_log |>
   glimpse()
 
 # build tree recipe ----
+# recipe 1
 recipe_tree <- recipe(target ~ ., data = student_train) |>
   step_dummy(all_nominal_predictors(), one_hot = TRUE) |> 
   step_center(all_predictors()) |> 
@@ -32,6 +33,12 @@ recipe_tree |>
   prep() |> 
   bake(new_data = NULL) |> 
   glimpse()
+
+# recipe 2
+recipe_tree_2 <- recipe(target ~ ., data = student_train) |>
+  step_dummy(all_nominal_predictors(), one_hot = TRUE) |> 
+  step_center(all_predictors()) |> 
+  step_scale(all_predictors()) 
 
 # build baseline recipe ----
 recipe_naive_bayes <- recipe(target ~ ., data = student_train) |> 

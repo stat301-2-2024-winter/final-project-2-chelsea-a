@@ -27,7 +27,6 @@ multinom_reg_nnet_spec <-
   set_engine('nnet') |> 
   set_mode("classification")
 
-
 log_spec <- 
   logistic_reg() |> 
   set_engine("glm") |> 
