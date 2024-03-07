@@ -17,7 +17,7 @@ recipe_lm <- recipe(target ~ ., data = student_train) |>
   step_interact(terms = ~ starts_with("gender_"):ends_with("_sem_grade")) |> 
   step_interact(terms = ~ starts_with("marital_status_"):ends_with("_sem_grade"))
 
-recipe_log |> 
+recipe_lm |> 
   prep() |> 
   bake(new_data = NULL) |> 
   glimpse()
