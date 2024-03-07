@@ -11,10 +11,9 @@ tidymodels_prefer()
 # load training data ----
 load(here("data_splits/student_train.rda"))
 
-# build log recipe ----
-recipe_log <- recipe(target ~ ., data = student_train) |> 
+# build lm recipe ----
+recipe_lm <- recipe(target ~ ., data = student_train) |> 
   step_dummy(all_nominal_predictors()) |> 
-  step_normalize(all_numeric_predictors()) |> 
   step_interact(terms = ~ starts_with("gender_"):ends_with("_sem_grade")) |> 
   step_interact(terms = ~ starts_with("marital_status_"):ends_with("_sem_grade"))
 
@@ -35,7 +34,7 @@ recipe_tree |>
   glimpse()
 
 # build baseline recipe ----
-recipe_baseline <- recipe(target ~ ., data = student_train) |> 
+recipe_naive_bayes <- recipe(target ~ ., data = student_train) |> 
   step_dummy(all_nominal_predictors(), one_hot = TRUE) |> 
   step_zv(all_predictors()) |> 
   step_normalize(all_numeric_predictors())
@@ -46,7 +45,7 @@ recipe_baseline |>
   glimpse()
 
 # write out recipe(s) ----
-save(recipe_log, file = here("recipes/recipe_log.rda"))
+save(recipe_lm, file = here("recipes/recipe_lm.rda"))
 save(recipe_tree, file = here("recipes/recipe_tree.rda"))
-save(recipe_baseline, file = here("recipes/recipe_baseline.rda"))
+save(recipe_naive_bayes, file = here("recipes/recipe_naive_bayes.rda"))
 

@@ -16,10 +16,21 @@ load(here("results/fit_null.rda"))
 load(here("results/fit_baseline.rda"))
 load(here("results/fit_log.rda"))
 load(here("results/tuned_rf.rda"))
+load(here("results/fit_nbayes.rda"))
 
 # inspecting model fit 
 fit_log |> 
   tidy()
+
+null_fit |> collect_metrics()
+
+tuned_rf |> collect_metrics()
+
+# failed bc i used logistic regression which models binary outcomes
+fit_baseline |>  collect_metrics()
+fit_log |> collect_metrics()
+
+fit_nbayes |>  collect_metrics()
 
 # extract predictions 
 pred_data_log <- predict(fit_log, student_train) 

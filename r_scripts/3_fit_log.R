@@ -18,7 +18,7 @@ registerDoMC(cores = num_cores)
 load(here("data_splits/student_folds.rda"))
 
 # load pre-processing/feature engineering/recipe
-load(here("recipes/recipe_log.rda"))
+load(here("recipes/recipe_lm.rda"))
 
 # model specifications ----
 log_spec <- 

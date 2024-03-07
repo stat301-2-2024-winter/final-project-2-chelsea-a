@@ -6,6 +6,8 @@ library(tidyverse)
 library(tidymodels)
 library(here)
 library(doMC)
+library(discrim)
+library(klaR)
 
 # handle common conflicts
 tidymodels_prefer()
@@ -18,7 +20,7 @@ registerDoMC(cores = num_cores)
 load(here("data_splits/student_folds.rda"))
 
 # load pre-processing/feature engineering/recipe
-load(here("recipes/recipe_baseline.rda"))
+load(here("recipes/recipe_naive_bayes.rda"))
 
 # Null Model ----
 # set seed
@@ -41,18 +43,47 @@ save(null_fit, file = here("results/fit_null.rda"))
 # set seed
 set.seed(394)
 
-baseline_spec <- logistic_reg() |>
-  set_engine("glm") |> 
+nbayes_spec <- naive_Bayes() |>
+  set_engine("klaR") |> 
   set_mode("classification")
 
-baseline_wflow <- workflow() |>
-  add_model(baseline_spec) |>
-  add_recipe(recipe_baseline)
+nbayes_wflow <- workflow() |>
+  add_model(nbayes_spec) |>
+  add_recipe(recipe_naive_bayes)
 
-baseline_fit <- baseline_wflow |>
+fit_nbayes <- nbayes_wflow |>
   fit_resamples(resamples = student_folds,
                 control = control_resamples(save_workflow = TRUE))
 
-fit_baseline <- fit(baseline_wflow, data = student_train)
+save(fit_nbayes, file = here("results/fit_nbayes.rda"))
 
-save(baseline_fit, file = here("results/fit_baseline.rda"))
+# failed baseline 
+# Basic baseline ----
+# set seed
+#  set.seed(394)
+# 
+#  baseline_spec <- logistic_reg() |>
+#      set_engine("glm") |> 
+#      set_mode("classification")
+# 
+# > baseline_wflow <- workflow() |>
+#   +   add_model(baseline_spec) |>
+#   +   add_recipe(recipe_baseline)
+# 
+# > baseline_fit <- baseline_wflow |>
+#   +   fit_resamples(resamples = student_folds,
+#                     +                 control = control_resamples(save_workflow = TRUE))
+# 
+# > fit_baseline <- fit(baseline_wflow, data = student_train)
+# 
+# > save(fit_baseline, file = here("results/fit_baseline.rda"))
+# Warning messages:
+#   1: All models failed. Run `show_notes(.Last.tune.result)` for more information. 
+# 2: ! Logistic regression is intended for modeling binary outcomes, but
+# there are 3 levels in the outcome.
+# ℹ If this is unintended, adjust outcome levels accordingly or see the
+# `multinom_reg()` function. 
+# 3: ! Logistic regression is intended for modeling binary outcomes, but
+# there are 3 levels in the outcome.
+# ℹ If this is unintended, adjust outcome levels accordingly or see the
+# `multinom_reg()` function. 
