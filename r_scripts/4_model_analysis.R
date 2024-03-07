@@ -21,10 +21,6 @@ load(here("results/fit_nbayes.rda"))
 fit_log |> 
   tidy()
 
-# failed bc i used logistic regression which models binary outcomes
-# fit_baseline |>  collect_metrics()
-# fit_log |> collect_metrics()
-
 # looking at accuracy of models
 acc_table <- null_fit |> 
   collect_metrics() |> 
@@ -98,9 +94,9 @@ roc_auc_tbl |> knitr::kable()
 
 
 # extract predictions 
-pred_data_log <- predict(fit_log, student_train) 
+pred_data_null <- predict(fit_null, student_train) 
 
-pred_baseline <- predict(fit_baseline, student_train) 
+pred_baseline <- predict(fit_nbayes, student_train) 
 
 best_rf_model <- select_best(tuned_rf, "roc_auc")
 
