@@ -1,4 +1,4 @@
-# Define and fit ordinary linear regression
+# Define and fit baseline models (null and naive bayes)
 # Random process in script, seed set right before it
 
 # load packages ----

@@ -22,15 +22,27 @@ load(here("results/fit_nbayes.rda"))
 fit_log |> 
   tidy()
 
-null_fit |> collect_metrics()
-
-tuned_rf |> collect_metrics()
-
 # failed bc i used logistic regression which models binary outcomes
-fit_baseline |>  collect_metrics()
-fit_log |> collect_metrics()
+# fit_baseline |>  collect_metrics()
+# fit_log |> collect_metrics()
 
-fit_nbayes |>  collect_metrics()
+# looking at accuracy of models
+table <- null_fit |> 
+  collect_metrics() |> 
+  mutate(model = "Null") |> 
+  select(-n, -.config, -.estimator) |> 
+  bind_rows(
+    nbayes_fit |> 
+  collect_metrics() |> 
+  mutate(model = "Naive Bayes") |> 
+  select(-n, -.config, -.estimator) 
+  ) |> bind_rows(
+tuned_rf |> 
+  show_best("accuracy") |> 
+  slice_min(mean) |> 
+  select(mean, std_err, .metric) |> 
+  mutate(model = "Random Forest")
+)
 
 # extract predictions 
 pred_data_log <- predict(fit_log, student_train) 

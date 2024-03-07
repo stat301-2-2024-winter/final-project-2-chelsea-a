@@ -1,5 +1,6 @@
-# Define and fit ordinary linear regression
+# Define and fit logistic regression
 # Random process in script, seed set right before it
+# multinomial regression multinom_reg (engine = neural network)
 
 # load packages ----
 library(tidyverse)
@@ -21,6 +22,12 @@ load(here("data_splits/student_folds.rda"))
 load(here("recipes/recipe_lm.rda"))
 
 # model specifications ----
+multinom_reg_nnet_spec <-
+  multinom_reg(penalty = 0) |> 
+  set_engine('nnet') |> 
+  set_mode("classification")
+
+
 log_spec <- 
   logistic_reg() |> 
   set_engine("glm") |> 
