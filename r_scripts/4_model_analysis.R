@@ -13,8 +13,7 @@ load(here("data_splits/student_train.rda"))
 
 # load trained models
 load(here("results/fit_null.rda"))
-load(here("results/fit_baseline.rda"))
-load(here("results/fit_log.rda"))
+load(here("results/fit_multinom.rda"))
 load(here("results/tuned_rf.rda"))
 load(here("results/fit_nbayes.rda"))
 
@@ -32,17 +31,23 @@ acc_table <- null_fit |>
   mutate(model = "Null") |> 
   select(-n, -.config, -.estimator) |> 
   bind_rows(
-    nbayes_fit |> 
-  collect_metrics() |> 
-  mutate(model = "Naive Bayes") |> 
-  select(-n, -.config, -.estimator) 
-  ) |> bind_rows(
-tuned_rf |> 
-  show_best("accuracy") |> 
-  slice_min(mean) |> 
-  select(mean, std_err, .metric) |> 
-  mutate(model = "Random Forest")
-) |>
+    nbayes_fit |>
+      collect_metrics() |> 
+      mutate(model = "Naive Bayes") |> 
+      select(-n, -.config, -.estimator)
+    ) |> bind_rows(
+      tuned_rf |> 
+        show_best("accuracy") |> 
+        slice_min(mean) |> 
+        select(mean, std_err, .metric) |> 
+        mutate(model = "Random Forest")
+      ) |>
+  bind_rows(
+    fit_multinom |>
+      collect_metrics() |> 
+      mutate(model = "Multinomial") |> 
+      select(-n, -.config, -.estimator)
+    ) |> 
   filter(.metric == "accuracy") |> 
   arrange(mean) |> 
   pivot_wider(names_from = .metric,
@@ -63,11 +68,18 @@ roc_auc_tbl <- tuned_rf |>
       mutate(model = "Naive Bayes") |> 
       select(-n, -.config, -.estimator)
     ) |> 
-  bind_rows(null_fit |> 
-              collect_metrics() |>
-              mutate(model = "Null") |> 
-              select(-n, -.config, -.estimator)
-            ) |> 
+  bind_rows(
+    null_fit |> 
+      collect_metrics() |>
+      mutate(model = "Null") |> 
+      select(-n, -.config, -.estimator)
+    ) |> 
+  bind_rows(
+    fit_multinom |>
+      collect_metrics() |> 
+      mutate(model = "Multinomial") |> 
+      select(-n, -.config, -.estimator)
+    ) |> 
   filter(.metric == "roc_auc") |> 
   arrange(mean) |> 
   pivot_wider(names_from = .metric,
@@ -78,6 +90,11 @@ roc_auc_tbl <- tuned_rf |>
 
 acc_table |> knitr::kable()
 roc_auc_tbl |> knitr::kable()
+
+
+
+
+
 
 
 # extract predictions 
