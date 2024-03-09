@@ -27,13 +27,11 @@ recipe_lm |>
 recipe_lm_2 <- recipe(target ~ ., data = student_train) |> 
   step_dummy(all_nominal_predictors()) |> 
   step_interact(terms = ~ starts_with("gender_"):ends_with("_sem_grade")) |> 
+  step_interact(terms = ~ starts_with("gender_"):ends_with("_at_enrollment")) |> 
   step_interact(terms = ~ starts_with("marital_status_"):ends_with("_sem_grade")) |> 
   step_interact(terms = ~ starts_with("marital_status"):ends_with("admission_grade")) |>
-  step_interact(terms = ~ starts_with("marital_status"):ends_with("attendance"))
-|> 
-  step_interact(terms = ~ starts_with("gender_"):ends_with("age_at_enrollment"))
-
-|> 
+  # attendance throws an error
+  step_interact(terms = ~ starts_with("marital_status"):ends_with("attendance")) |> 
   step_interact(terms = ~ starts_with("international_"):ends_with("admission_grade")) |> 
   step_interact(terms = ~ starts_with("gender_"):ends_with("international"))
 
