@@ -20,7 +20,7 @@ student_data <- read_delim(here("data/data.csv"), delim=";") |>
                                             "Divorced", "Facto union", "Legally separated")),
          daytime_evening_attendance = factor(daytime_evening_attendance,
                                              levels = c(0, 1),
-                                             labels = c("No", "Yes")),
+                                             labels = c("Evening", "Daytime")),
          displaced = factor(displaced,
                             levels = c(0, 1),
                             labels = c("No", "Yes")),

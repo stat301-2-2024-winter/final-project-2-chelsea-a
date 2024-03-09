@@ -19,7 +19,7 @@ student_data <- read_delim(here("data/data.csv"), delim=";") |>
                                             "Divorced", "Facto union", "Legally separated")),
          daytime_evening_attendance = factor(daytime_evening_attendance,
                                              levels = c(0, 1),
-                                             labels = c("No", "Yes")),
+                                             labels = c("Evening", "Daytime")),
          displaced = factor(displaced,
                             levels = c(0, 1),
                             labels = c("No", "Yes")),
@@ -73,14 +73,14 @@ ggplot(student_data, aes(gender, curricular_units_2nd_sem_enrolled)) +
 ggplot(student_data, aes(gender, curricular_units_1st_sem_enrolled)) +
   geom_boxplot(fill = "skyblue", color = "black") +
   theme_minimal() 
-# small interaction between enrolled and gender
+# very small interaction between enrolled and gender
 
 # age and gender 
-ggplot(student_data, aes(gender, age_at_enrollment,)) +
+ggplot(student_data, aes(gender, age_at_enrollment)) +
   geom_boxplot(fill = "skyblue", color = "black") +
   geom_smooth() +
   theme_minimal() 
-# interaction between gender and age of enrollement 
+# interaction between gender and age of enrollment 
 
 # marital status and units enrolled / admission grade 
 plot1 <- ggplot(student_data, aes(marital_status, admission_grade)) +
@@ -99,9 +99,44 @@ ggplot(student_data, aes(marital_status, curricular_units_2nd_sem_grade)) +
   theme_minimal() 
 # interaction between grade and marriage status
 
-ggplot(student_data, aes(x = course, y = curricular_units_st_sem_credited, fill = course)) +
-  geom_boxplot() +
-  labs(x = "Category", y = "Numeric Variable", title = "Box Plot")
+ggplot(student_data, aes(x = marital_status, fill = daytime_evening_attendance)) +
+  geom_bar(position = "stack", width = 0.7) +
+  theme_minimal() 
+
+ggplot(student_data, aes(x = gender, fill = daytime_evening_attendance)) +
+  geom_bar(position = "stack", width = 0.7) +
+  theme_minimal() 
+# interaction between daytime_evening attendance and marital status 
+
+ggplot(student_data, aes(international, admission_grade)) +
+  geom_boxplot(fill = "skyblue", color = "black") +
+  theme_minimal() 
+
+ft <- student_data |> filter(international == "Yes")
+
+median(ft$admission_grade)
+
+ft2 <- student_data |> filter(international == "No")
+median(ft2$admission_grade)
+# interaction between admission grade and international 
+
+student_data |> 
+  filter(international == "Yes") |> 
+  ggplot(aes(x = gender)) +
+  geom_bar(fill = "skyblue", color = "black") +
+  theme_minimal()
+# interaction between international and gender
+
+student_data |> 
+  filter(international == "Yes") |> 
+  ggplot(aes(x = gender)) +
+  geom_bar(fill = "skyblue", color = "black") +
+  theme_minimal()
+
+ggplot(student_data, aes(x = debtor, fill = scholarship_holder)) +
+  geom_bar(position = "stack", width = 0.7) +
+  theme_minimal() 
+
 
 student_data |> names()
 

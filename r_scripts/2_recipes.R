@@ -22,6 +22,25 @@ recipe_lm |>
   bake(new_data = NULL) |> 
   glimpse()
 
+# build lm recipe ----
+# recipe 2
+recipe_lm_2 <- recipe(target ~ ., data = student_train) |> 
+  step_dummy(all_nominal_predictors()) |> 
+  step_interact(terms = ~ starts_with("gender_"):ends_with("_sem_grade")) |> 
+  step_interact(terms = ~ starts_with("marital_status_"):ends_with("_sem_grade")) |> 
+  step_interact(terms = ~ starts_with("marital_status_"):ends_with("admission_grade")) |> 
+  step_interact(terms = ~ starts_with("marital_status_"):ends_with("_attendance")) |> 
+  step_interact(terms = ~ starts_with("gender_"):ends_with("age_at_enrollment"))
+
+|> 
+  step_interact(terms = ~ starts_with("international_"):ends_with("admission_grade")) |> 
+  step_interact(terms = ~ starts_with("gender_"):ends_with("international"))
+
+recipe_lm_2 |> 
+  prep() |> 
+  bake(new_data = NULL) |> 
+  glimpse()
+
 # build tree recipe ----
 # recipe 1
 recipe_tree <- recipe(target ~ ., data = student_train) |>
