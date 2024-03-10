@@ -63,13 +63,14 @@ recipe_naive_bayes <- recipe(target ~ ., data = student_train) |>
   step_zv(all_predictors()) |> 
   step_normalize(all_numeric_predictors())
 
-recipe_baseline |> 
+recipe_naive_bayes |> 
   prep() |> 
   bake(new_data = NULL) |> 
   glimpse()
 
 # write out recipe(s) ----
 save(recipe_lm, file = here("recipes/recipe_lm.rda"))
+save(recipe_lm_2, file = here("recipes/recipe_lm_2.rda"))
 save(recipe_tree, file = here("recipes/recipe_tree.rda"))
 save(recipe_naive_bayes, file = here("recipes/recipe_naive_bayes.rda"))
 

@@ -21,6 +21,7 @@ load(here("data_splits/student_folds.rda"))
 
 # load pre-processing/feature engineering/recipe
 load(here("recipes/recipe_naive_bayes.rda"))
+load(here("recipes/recipe_lm.rda"))
 
 # Null Model ----
 # set seed
@@ -31,7 +32,7 @@ null_spec <- null_model() |>
 
 null_wflow <- workflow() |> 
   add_model(null_spec) |> 
-  add_recipe(recipe_baseline)
+  add_recipe(recipe_lm)
 
 null_fit <- null_wflow |> 
   fit_resamples(resample = student_folds, 
@@ -56,34 +57,3 @@ fit_nbayes <- nbayes_wflow |>
                 control = control_resamples(save_workflow = TRUE))
 
 save(fit_nbayes, file = here("results/fit_nbayes.rda"))
-
-# failed baseline 
-# Basic baseline ----
-# set seed
-#  set.seed(394)
-# 
-#  baseline_spec <- logistic_reg() |>
-#      set_engine("glm") |> 
-#      set_mode("classification")
-# 
-# > baseline_wflow <- workflow() |>
-#   +   add_model(baseline_spec) |>
-#   +   add_recipe(recipe_baseline)
-# 
-# > baseline_fit <- baseline_wflow |>
-#   +   fit_resamples(resamples = student_folds,
-#                     +                 control = control_resamples(save_workflow = TRUE))
-# 
-# > fit_baseline <- fit(baseline_wflow, data = student_train)
-# 
-# > save(fit_baseline, file = here("results/fit_baseline.rda"))
-# Warning messages:
-#   1: All models failed. Run `show_notes(.Last.tune.result)` for more information. 
-# 2: ! Logistic regression is intended for modeling binary outcomes, but
-# there are 3 levels in the outcome.
-# ℹ If this is unintended, adjust outcome levels accordingly or see the
-# `multinom_reg()` function. 
-# 3: ! Logistic regression is intended for modeling binary outcomes, but
-# there are 3 levels in the outcome.
-# ℹ If this is unintended, adjust outcome levels accordingly or see the
-# `multinom_reg()` function. 
