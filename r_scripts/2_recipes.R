@@ -30,10 +30,9 @@ recipe_lm_2 <- recipe(target ~ ., data = student_train) |>
   step_interact(terms = ~ starts_with("gender_"):ends_with("_at_enrollment")) |> 
   step_interact(terms = ~ starts_with("marital_status_"):ends_with("_sem_grade")) |> 
   step_interact(terms = ~ starts_with("marital_status"):ends_with("admission_grade")) |>
-  # attendance throws an error
-  step_interact(terms = ~ starts_with("marital_status"):ends_with("attendance")) |> 
-  step_interact(terms = ~ starts_with("international_"):ends_with("admission_grade")) |> 
-  step_interact(terms = ~ starts_with("gender_"):ends_with("international"))
+  step_interact(terms = ~ starts_with("marital_status_"):starts_with("daytime_")) |> 
+  step_interact(terms = ~ starts_with("international_"):ends_with("_admission_grade")) |> 
+  step_interact(terms = ~ starts_with("gender_"):starts_with("international_"))
 
 recipe_lm_2 |> 
   prep() |> 
