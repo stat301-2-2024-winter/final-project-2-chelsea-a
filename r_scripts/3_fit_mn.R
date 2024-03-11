@@ -1,4 +1,4 @@
-# Define and fit logistic regression
+# Define and fit multinomial regression
 # Random process in script, seed set right before it
 # multinomial regression multinom_reg (engine = neural network)
 

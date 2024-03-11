@@ -55,7 +55,9 @@ recipe_tree |>
 recipe_tree_2 <- recipe(target ~ ., data = student_train) |>
   step_dummy(all_nominal_predictors(), one_hot = TRUE) |> 
   step_center(all_predictors()) |> 
-  step_scale(all_predictors()) 
+  step_scale(all_predictors()) |> 
+  step_other(mothers_occupation, threshold = 0.01) |> 
+  step_other(fathers_occupation, threshold = 0.01)
 
 # build baseline recipe ----
 recipe_naive_bayes <- recipe(target ~ ., data = student_train) |> 
@@ -72,5 +74,6 @@ recipe_naive_bayes |>
 save(recipe_lm, file = here("recipes/recipe_lm.rda"))
 save(recipe_lm_2, file = here("recipes/recipe_lm_2.rda"))
 save(recipe_tree, file = here("recipes/recipe_tree.rda"))
+save(recipe_tree, file = here("recipes/recipe_tree_2.rda"))
 save(recipe_naive_bayes, file = here("recipes/recipe_naive_bayes.rda"))
 

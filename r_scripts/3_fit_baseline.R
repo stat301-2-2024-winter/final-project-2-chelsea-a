@@ -40,7 +40,7 @@ null_fit <- null_wflow |>
 
 save(null_fit, file = here("results/fit_null.rda"))
 
-# Basic baseline ----
+# Nbayes Model ----
 # set seed
 set.seed(394)
 
