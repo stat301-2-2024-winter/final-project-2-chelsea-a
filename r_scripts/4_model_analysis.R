@@ -8,17 +8,16 @@ library(here)
 # handle common conflicts
 tidymodels_prefer()
 
-# load training data
-load(here("data_splits/student_train.rda"))
-
 # load trained models
 load(here("results/fit_null.rda"))
+load(here("results/fit_multinom_0.rda"))
 load(here("results/fit_multinom.rda"))
 load(here("results/fit_multinom_2.rda"))
-load(here("results/fit_multinom_3.rda"))
 load(here("results/tuned_rf.rda"))
 load(here("results/fit_nbayes.rda"))
 load(here("results/tuned_en.rda"))
+load(here("results/tuned_en_2.rda"))
+load(here("results/tuned_bt.rda"))
 
 # look at multinomial models metrics
 fit_multinom |> 
@@ -30,10 +29,10 @@ fit_multinom |>
       mutate(model = "mn 2") 
     )|> 
   bind_rows(
-    fit_multinom_3 |>
+    fit_multinom_0 |>
       collect_metrics() |> 
-      mutate(model = "mn 3")
-  ) |> 
+      mutate(model = "mn 0") 
+  )|> 
   pivot_wider(names_from = .metric,
               values_from = mean) |> 
   select(`Model` = model,
@@ -41,7 +40,67 @@ fit_multinom |>
          roc_auc,
          `STD Error` = std_err)
 
-# mn 1 performed the best
+
+# look at elastic net models metrics
+tuned_en |> 
+  show_best("accuracy") |>
+  slice_min(mean) |> 
+  mutate(model = "en 1") |> 
+  bind_rows(
+    tuned_en_2 |>
+      show_best("accuracy") |> 
+      slice_min(mean) |> 
+      mutate(model = "en 2") 
+  ) |> 
+  pivot_wider(names_from = .metric,
+              values_from = mean) |> 
+  select(`Model` = model,
+         `Accuracy` = accuracy,
+         `STD Error` = std_err)
+
+tuned_en |> 
+  show_best("roc_auc") |>
+  slice_min(mean) |> 
+  mutate(model = "en 1") |> 
+  bind_rows(
+    tuned_en_2 |>
+      show_best("roc_auc") |> 
+      slice_min(mean) |> 
+      mutate(model = "en 2") 
+  ) |> 
+  pivot_wider(names_from = .metric,
+              values_from = mean) |> 
+  select(`Model` = model,
+         roc_auc,
+         `STD Error` = std_err)
+
+# look at boosted tree models metrics
+tuned_bt |> 
+  show_best("accuracy") |>
+  slice_min(mean) |> 
+  mutate(model = "bt 1") |> 
+  bind_rows(
+    tuned_en_2 |>
+      show_best("accuracy") |> 
+      slice_min(mean) |> 
+      mutate(model = "bt 2") 
+  ) |> 
+  pivot_wider(names_from = .metric,
+              values_from = mean) |> 
+  select(`Model` = model,
+         `Accuracy` = accuracy,
+         `STD Error` = std_err)
+
+tuned_bt |> 
+  show_best("roc_auc") |>
+  slice_min(mean) |> 
+  mutate(model = "bt 1") |> 
+  bind_rows(
+    tuned_en_2 |>
+      show_best("accuracy") |> 
+      slice_min(mean) |> 
+      mutate(model = "bt 2") 
+  ) 
 
 # looking at accuracy of models
 acc_table <- null_fit |> 
@@ -61,17 +120,24 @@ acc_table <- null_fit |>
         mutate(model = "Random Forest")
       ) |>
   bind_rows(
-    fit_multinom |>
+    fit_multinom_2 |>
       collect_metrics() |> 
       mutate(model = "Multinomial") |> 
       select(-n, -.config, -.estimator)
     ) |> bind_rows(
-      tuned_en |> 
+      tuned_en_2 |> 
         show_best("accuracy") |> 
         slice_min(mean) |> 
         select(mean, std_err, .metric) |> 
         mutate(model = "Elastic Net")
     ) |> 
+  bind_rows(
+    tuned_bt |> 
+      show_best("accuracy") |> 
+      slice_min(mean) |> 
+      select(mean, std_err, .metric) |> 
+      mutate(model = "Boosted Tree")
+  ) |>
   filter(.metric == "accuracy") |> 
   arrange(mean) |> 
   pivot_wider(names_from = .metric,
@@ -99,18 +165,25 @@ roc_auc_tbl <- tuned_rf |>
       select(-n, -.config, -.estimator)
     ) |> 
   bind_rows(
-    fit_multinom |>
+    fit_multinom_2 |>
       collect_metrics() |> 
       mutate(model = "Multinomial") |> 
       select(-n, -.config, -.estimator)
     ) |>
   bind_rows(
-      tuned_en |> 
+      tuned_en_2 |> 
         show_best("roc_auc") |> 
         slice_min(mean) |> 
         select(mean, std_err, .metric) |> 
         mutate(model = "Elastic Net")
     ) |>  
+  bind_rows(
+    tuned_bt |> 
+      show_best("roc_auc") |> 
+      slice_min(mean) |> 
+      select(mean, std_err, .metric) |> 
+      mutate(model = "Boosted Tree")
+  ) |> 
   filter(.metric == "roc_auc") |> 
   arrange(mean) |> 
   pivot_wider(names_from = .metric,

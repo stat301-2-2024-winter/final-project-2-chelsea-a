@@ -1,4 +1,5 @@
 # Define, fit, and tune elastic net model (glmnet)
+# Random process in script, seed set right before it
 
 # load packages ----
 library(tidyverse)

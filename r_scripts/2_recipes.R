@@ -1,5 +1,4 @@
 # Setup pre-processing/recipes/feature engineering
-# do ggcorplot to find interactions 
 
 # load packages ----
 library(tidyverse)
@@ -12,14 +11,26 @@ tidymodels_prefer()
 # load training data ----
 load(here("data_splits/student_train.rda"))
 
-# build lm recipe ----
-recipe_lm_0 <- recipe(target ~ ., data = student_train) |> 
+# build starter lm recipe  ----
+recipe_lm_base <- recipe(target ~ ., data = student_train) |> 
   step_dummy(all_nominal_predictors()) 
+
+recipe_lm_base |> 
+  prep() |> 
+  bake(new_data = NULL) |> 
+  glimpse()
+
+# build lm recipe ----
+# recipe 
 
 recipe_lm <- recipe(target ~ ., data = student_train) |> 
   step_dummy(all_nominal_predictors()) |> 
-  step_interact(terms = ~ starts_with("gender_"):ends_with("_sem_grade")) |> 
-  step_interact(terms = ~ starts_with("marital_status_"):ends_with("_sem_grade"))
+  step_interact(terms = ~ mothers_occupation:fathers_occupation) |>
+  step_interact(terms = ~ ends_with("1st_sem_credited"):ends_with("2nd_sem_credited")) |>
+  step_interact(terms = ~ ends_with("1st_sem_enrolled"):ends_with("2nd_sem_enrolled")) |>
+  step_interact(terms = ~ ends_with("1st_sem_evaluations"):ends_with("2nd_sem_evaluations")) |>
+  step_interact(terms = ~ ends_with("1st_sem_approved"):ends_with("2nd_sem_approved")) |>
+  step_interact(terms = ~ ends_with("1st_sem_grade"):ends_with("2nd_sem_grade")) 
 
 recipe_lm |> 
   prep() |> 
@@ -28,33 +39,19 @@ recipe_lm |>
 
 # build lm recipe ----
 # recipe 2
+# differences: two step interacts: parents' qualification and units without evaluations
 recipe_lm_2 <- recipe(target ~ ., data = student_train) |> 
   step_dummy(all_nominal_predictors()) |> 
-  step_nzv() |> 
-  step_interact(terms = ~ starts_with("mothers_qualification_"):ends_with("_fathers_qualification")) |> 
-  step_interact(terms = ~ starts_with("morthers_occupation_"):ends_with("_fathers_occupation")) |> 
-  step_interact(terms = ~ starts_with("marital_status_"):ends_with("_sem_grade")) |>
-  step_interact(terms = ~ starts_with("marital_status"):ends_with("admission_grade")) |>
-  step_interact(terms = ~ starts_with("marital_status_"):starts_with("daytime_")) |> 
-  step_interact(terms = ~ starts_with("international_"):ends_with("_admission_grade")) |> 
-  step_interact(terms = ~ starts_with("gender_"):starts_with("international_")) 
-  
+  step_interact(terms = ~ mothers_occupation:fathers_occupation) |>
+  step_interact(terms = ~ mothers_qualification:fathers_qualification) |>
+  step_interact(terms = ~ ends_with("1st_sem_credited"):ends_with("2nd_sem_credited")) |>
+  step_interact(terms = ~ ends_with("1st_sem_enrolled"):ends_with("2nd_sem_enrolled")) |>
+  step_interact(terms = ~ ends_with("1st_sem_evaluations"):ends_with("2nd_sem_evaluations")) |>
+  step_interact(terms = ~ ends_with("1st_sem_approved"):ends_with("2nd_sem_approved")) |>
+  step_interact(terms = ~ ends_with("1st_sem_grade"):ends_with("2nd_sem_grade")) |>
+  step_interact(terms = ~ ends_with("1st_sem_without_evaluations"):ends_with("2nd_sem_without_evaluations"))
+
 recipe_lm_2 |> 
-  prep() |> 
-  bake(new_data = NULL) |> 
-  glimpse() 
-
-# original recipe interactions 
-recipe_lm_3 <- recipe(target ~ ., data = student_train) |> 
-  step_dummy(all_nominal_predictors()) |> 
-  step_interact(terms = ~ starts_with("mothers_occupation"):ends_with("fathers_occupation")) |>
-  step_interact(terms = ~ starts_with("curricular_units_1st_sem_credited"):ends_with("2nd_sem_credited")) |>
-  step_interact(terms = ~ starts_with("curricular_units_1st_sem_enrolled"):ends_with("2nd_sem_enrolled")) |>
-  step_interact(terms = ~ starts_with("curricular_units_1st_sem_evaluations"):ends_with("2nd_sem_evaluations")) |>
-  step_interact(terms = ~ starts_with("curricular_units_1st_sem_approved"):ends_with("2nd_sem_approved")) |>
-  step_interact(terms = ~ starts_with("curricular_units_1st_sem_grade"):ends_with("2nd_sem_grade")) 
-
-recipe_lm_3 |> 
   prep() |> 
   bake(new_data = NULL) |> 
   glimpse()
@@ -65,8 +62,7 @@ recipe_tree <- recipe(target ~ ., data = student_train) |>
   step_dummy(all_nominal_predictors(), one_hot = TRUE) |> 
   step_nzv(all_predictors()) |> 
   step_center(all_predictors()) |> 
-  step_scale(all_predictors()) |> 
-  step_other(mothers_qualification, fathers_qualification)
+  step_scale(all_predictors())
 
 recipe_tree |> 
   prep() |> 
@@ -76,16 +72,19 @@ recipe_tree |>
 # recipe 2
 recipe_tree_2 <- recipe(target ~ ., data = student_train) |>
   step_dummy(all_nominal_predictors(), one_hot = TRUE) |> 
-  step_center(all_predictors()) |> 
-  step_scale(all_predictors()) |> 
-  step_other(mothers_occupation, threshold = 0.01) |> 
-  step_other(fathers_occupation, threshold = 0.01)
+  step_interact(terms = ~ mothers_occupation:fathers_occupation) |>
+  step_interact(terms = ~ mothers_qualification:fathers_qualification) |>
+  step_interact(terms = ~ ends_with("1st_sem_credited"):ends_with("2nd_sem_credited")) |>
+  step_interact(terms = ~ ends_with("1st_sem_enrolled"):ends_with("2nd_sem_enrolled")) |>
+  step_interact(terms = ~ ends_with("1st_sem_evaluations"):ends_with("2nd_sem_evaluations")) |>
+  step_interact(terms = ~ ends_with("1st_sem_approved"):ends_with("2nd_sem_approved")) |>
+  step_interact(terms = ~ ends_with("1st_sem_grade"):ends_with("2nd_sem_grade")) |>
+  step_interact(terms = ~ ends_with("1st_sem_without_evaluations"):ends_with("2nd_sem_without_evaluations"))
 
-# build baseline recipe ----
+# build nbayes recipe ----
 recipe_naive_bayes <- recipe(target ~ ., data = student_train) |> 
   step_dummy(all_nominal_predictors(), one_hot = TRUE) |> 
-  step_zv(all_predictors()) |> 
-  step_normalize(all_numeric_predictors())
+  step_nzv(all_predictors()) 
 
 recipe_naive_bayes |> 
   prep() |> 
@@ -93,10 +92,9 @@ recipe_naive_bayes |>
   glimpse()
 
 # write out recipe(s) ----
+save(recipe_lm_base, file = here("recipes/recipe_lm_base.rda"))
 save(recipe_lm, file = here("recipes/recipe_lm.rda"))
 save(recipe_lm_2, file = here("recipes/recipe_lm_2.rda"))
-save(recipe_lm_3, file = here("recipes/recipe_lm_3.rda"))
-save(recipe_lm_0, file = here("recipes/recipe_lm_0.rda"))
 save(recipe_tree, file = here("recipes/recipe_tree.rda"))
 save(recipe_tree_2, file = here("recipes/recipe_tree_2.rda"))
 save(recipe_naive_bayes, file = here("recipes/recipe_naive_bayes.rda"))

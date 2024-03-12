@@ -38,7 +38,7 @@ keep_pred_2 <- control_resamples(save_pred = TRUE)
 
 # fit workflows/models ----
 # set seed
-set.seed(990)
+set.seed(456)
 fit_multinom_2 <- mn_wflow_2 |> 
   fit_resamples(
     resamples = student_folds

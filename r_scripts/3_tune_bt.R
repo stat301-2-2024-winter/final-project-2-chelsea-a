@@ -1,4 +1,5 @@
 # Define, fit, and tune boosted tree model (xgboost)
+# Random process in script, seed set right before it
 
 # load packages ----
 library(tidyverse)
@@ -35,8 +36,8 @@ bt_wflow <-
 # hyperparameter tuning values ----
 bt_params <- extract_parameter_set_dials(bt_spec) |> 
   update(mtry = mtry(range = c(1, 14)),
-         min_n = min_n(range = c(1, 1)),
-         learn_rate = learn_rate(range = c(-5, -0.2)))
+         min_n = min_n(range = c(1, 10)),
+         learn_rate = learn_rate(range = c(0.01, 0.1)))
 
 # build tuning grid
 bt_grid <- grid_regular(bt_params, levels = 5)
