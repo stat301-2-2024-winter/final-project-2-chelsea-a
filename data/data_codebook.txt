@@ -1,0 +1,41 @@
+data
+
+A data frame with 4424 observations on the following 36 variables:
+
+marital_status - marital status of the student (1: single 2: married 3: widower 4: divorced 5: facto union 6:legally separated)
+application_mode - how the student applied to the school (method/ phase)
+application_order - application order (between 0 - first choice; and 9 last choice)
+course - what degree the students are enrolled in (agronomy, design, education, nursing, journalism, management, social service, and technologies)
+daytime_evening_attendance - are they enrolled in daytime (1) or evening (0) attendance
+previous_qualification - the student's previous qualification (education level)
+previous_qualification_grade - the grade of previous qualification (between 0 and 200)
+nationality - the nationality of the student 
+mothers_qualification - the mothers highest level of education 
+fathers_qualification - the fathers highest level of education 
+mothers_occupation - the mothers occupation 
+fathers_occupation - the fathers occupation 
+admission_grade - admission grade (between 0 and 200)                       
+displaced - whether the student is displaced (1 – yes 0 – no)   
+educational_special_needs - whether the student has educational special needs (1 – yes 0 – no)  
+debtor - whether the student is in debt (1 – yes 0 – no)                                  
+tuition_fees_up_to_date - whether the student is up to date on tuition (1 – yes 0 – no)         
+gender - the gender of the student (1 – male 0 – female)                                    
+scholarship_holder - whether the student is has a scholarship (1 – yes 0 – no)            
+age_at_enrollment - the age of the student at enrollment                     
+international - whether the student is international (1 – yes 0 – no)                           
+curricular_units_st_sem_credited - number of curricular units credited in the 1st semester       
+curricular_units_st_sem_enrolled - number of curricular units enrolled in the 1st semester      
+curricular_units_st_sem_evaluations - number of evaluations to curricular units in the 1st semester     
+curricular_units_st_sem_approved - number of curricular units approved in the 1st semester      
+curricular_units_st_sem_grade - grade average in the 1st semester (between 0 and 20)	         
+curricular_units_st_sem_without_evaluations - number of curricular units without evalutions in the 1st semester
+curricular_units_2nd_sem_credited - number of curricular units credited in the 2nd semester
+curricular_units_2nd_sem_enrolled - number of curricular units enrolled in the 2nd semester     
+curricular_units_2nd_sem_evaluations - number of evaluations to curricular units in the 2nd semester       
+curricular_units_2nd_sem_approved - number of curricular units approved in the 2nd semester     
+curricular_units_2nd_sem_grade - grade average in the 2nd semester (between 0 and 20)           
+curricular_units_2nd_sem_without_evaluations - number of curricular units without evalutions in the 1st semester
+unemployment_rate - unemployment rate (%)                        
+inflation_rate - inflation rate (%)                              
+gdp - GDP                                         
+target - The problem is formulated as a three category classification task (dropout, enrolled, and graduate) at the end of the normal duration of the course        
