@@ -18,6 +18,7 @@ load(here("results/tuned_en.rda"))
 load(here("results/tuned_en_2.rda"))
 load(here("results/tuned_bt.rda"))
 load(here("results/tuned_bt_2.rda"))
+load(here("results/tuned_knn.rda"))
 
 # look at multinomial models metrics
 fit_multinom |> 
@@ -74,6 +75,7 @@ tuned_en |>
          `STD Error` = std_err)
 
 # look at boosted tree models metrics #.777
+# 767 767
 tuned_bt |> 
   show_best("accuracy") |>
   slice_max(mean) |> 
@@ -90,6 +92,7 @@ tuned_bt |>
          `Accuracy` = accuracy,
          `STD Error` = std_err)
 #.881
+# 863 864
 tuned_bt |> 
   show_best("roc_auc") |>
   slice_max(mean) |> 
@@ -105,6 +108,17 @@ tuned_bt |>
   select(`Model` = model,
          roc_auc,
          `STD Error` = std_err)
+
+# look at knn models metrics
+tuned_knn |> 
+  show_best("accuracy") |>
+  slice_max(mean) |> 
+  mutate(model = "knn")
+
+tuned_knn |>
+      show_best("roc_auc") |> 
+      slice_max(mean) |> 
+      mutate(model = "knn") 
 
 # looking at accuracy of all models
 acc_table <- null_fit |> 

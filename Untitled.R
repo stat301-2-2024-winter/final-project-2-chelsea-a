@@ -1,2 +1,0 @@
-# random forest model analysis
-

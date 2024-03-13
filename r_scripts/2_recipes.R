@@ -68,11 +68,11 @@ recipe_tree |>
 
 # recipe 2
 recipe_tree_2 <- recipe(target ~ ., data = student_train) |>
-  step_dummy(all_nominal_predictors(), one_hot = TRUE) |> 
-  step_cut(inflation_rate, breaks = 2) |>
-  step_cut(gdp, breaks = 2) |>
-  step_nzv(all_predictors()) |> 
-  step_normalize(all_numeric_predictors())
+  step_rm(gdp, inflation_rate, unemployment_rate, fathers_qualification, mothers_qualification,
+          fathers_occupation, mothers_occupation) |> 
+  step_dummy(all_nominal_predictors(), one_hot = TRUE) 
+  # step_nzv(all_predictors()) |> 
+  # step_normalize(all_numeric_predictors())
 
 recipe_tree_2 |> 
   prep() |> 
