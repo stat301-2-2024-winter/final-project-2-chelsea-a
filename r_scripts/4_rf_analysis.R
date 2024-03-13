@@ -12,7 +12,7 @@ tidymodels_prefer()
 load(here("results/tuned_rf.rda"))
 load(here("results/tuned_rf_2.rda"))
 
-# look at rf 1 metrics
+# look at rf accuracy
 tuned_rf |> 
   show_best("accuracy") |> 
   mutate(model = "rf 1") |>
@@ -31,6 +31,7 @@ tuned_rf |>
          `Accuracy` = accuracy,
          `STD Error` = std_err) 
 
+# look at rf roc_auc
 tuned_rf |> 
   show_best("roc_auc") |> 
   mutate(model = "rf 1") |>
@@ -49,4 +50,4 @@ tuned_rf |>
          roc_auc,
          `STD Error` = std_err) 
 
-# rf 2 is .2 worse in. accuracy and .1 worse in roc_auc
+# rf 1 is worse in accuracy and roc_auc

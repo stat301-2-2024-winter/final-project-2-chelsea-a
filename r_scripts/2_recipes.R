@@ -37,8 +37,7 @@ recipe_lm |>
   bake(new_data = NULL) |> 
   glimpse()
 
-# build lm recipe ----
-# recipe 2
+# build lm recipe 2 ----
 # differences: two step interacts: parents' qualification and units without evaluations
 recipe_lm_2 <- recipe(target ~ ., data = student_train) |> 
   step_dummy(all_nominal_predictors()) |> 
