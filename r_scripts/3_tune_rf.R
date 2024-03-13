@@ -22,7 +22,7 @@ load(here("recipes/recipe_tree.rda"))
 
 # model specifications ----
 rf_spec <- rand_forest(mtry = tune(),
-                       trees = 200,
+                       trees = 1000,
                        min_n = tune()) |>  
   set_mode("classification")|> 
   set_engine("ranger")
@@ -37,9 +37,9 @@ keep_pred <- control_resamples(save_pred = TRUE)
 
 # hyperparameter tuning values ----
 rf_params <- extract_parameter_set_dials(rf_spec) |> 
-  update(mtry = mtry(range = c(1, 6)))
+  update(mtry = mtry(range = c(6, 18)))
 
-rf_grid <- grid_regular(rf_params, levels = 5)
+rf_grid <- grid_regular(rf_params, levels = c(3, 6))
 
 # fit workflows/models ----
 # set seed
@@ -52,4 +52,3 @@ tuned_rf <- tune_grid(rf_wflow,
 
 # write out results (fitted/trained workflows) ----
 save(tuned_rf, file = here("results/tuned_rf.rda"))
-

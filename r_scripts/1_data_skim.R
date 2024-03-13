@@ -126,6 +126,7 @@ ggsave("figures/correlation_plot2.png", ggcorr_plot,  width = 8, height = 6)
 
 # no eval 2nd and no eval 1st
 
+
 # plots 
 ggplot(student_data, aes(target)) +
   geom_bar(fill = "skyblue", color = "black") +
@@ -218,3 +219,7 @@ ggplot(student_data, aes(x = debtor, fill = scholarship_holder)) +
 student_data |> 
   count(target) |> 
   knitr::kable()
+
+student_data |> 
+  geom_bar(fill = "skyblue", color = "black") +
+  theme_minimal()

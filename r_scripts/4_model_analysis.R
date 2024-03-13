@@ -10,7 +10,6 @@ tidymodels_prefer()
 
 # load trained models
 load(here("results/fit_null.rda"))
-load(here("results/fit_multinom_0.rda"))
 load(here("results/fit_multinom.rda"))
 load(here("results/fit_multinom_2.rda"))
 load(here("results/tuned_rf.rda"))
@@ -18,6 +17,7 @@ load(here("results/fit_nbayes.rda"))
 load(here("results/tuned_en.rda"))
 load(here("results/tuned_en_2.rda"))
 load(here("results/tuned_bt.rda"))
+load(here("results/tuned_bt_2.rda"))
 
 # look at multinomial models metrics
 fit_multinom |> 
@@ -27,12 +27,7 @@ fit_multinom |>
     fit_multinom_2 |>
       collect_metrics() |> 
       mutate(model = "mn 2") 
-    )|> 
-  bind_rows(
-    fit_multinom_0 |>
-      collect_metrics() |> 
-      mutate(model = "mn 0") 
-  )|> 
+    ) |> 
   pivot_wider(names_from = .metric,
               values_from = mean) |> 
   select(`Model` = model,
@@ -44,12 +39,14 @@ fit_multinom |>
 # look at elastic net models metrics
 tuned_en |> 
   show_best("accuracy") |>
-  slice_min(mean) |> 
+  slice_max(mean) |> 
+  slice_head(n = 1) |>
   mutate(model = "en 1") |> 
   bind_rows(
     tuned_en_2 |>
       show_best("accuracy") |> 
-      slice_min(mean) |> 
+      slice_max(mean) |> 
+      slice_head(n = 1) |> 
       mutate(model = "en 2") 
   ) |> 
   pivot_wider(names_from = .metric,
@@ -60,12 +57,14 @@ tuned_en |>
 
 tuned_en |> 
   show_best("roc_auc") |>
-  slice_min(mean) |> 
+  slice_max(mean) |> 
+  slice_head(n = 1) |>
   mutate(model = "en 1") |> 
   bind_rows(
     tuned_en_2 |>
       show_best("roc_auc") |> 
-      slice_min(mean) |> 
+      slice_max(mean) |> 
+      slice_head(n = 1) |> 
       mutate(model = "en 2") 
   ) |> 
   pivot_wider(names_from = .metric,
@@ -74,15 +73,15 @@ tuned_en |>
          roc_auc,
          `STD Error` = std_err)
 
-# look at boosted tree models metrics
+# look at boosted tree models metrics #.777
 tuned_bt |> 
   show_best("accuracy") |>
-  slice_min(mean) |> 
+  slice_max(mean) |> 
   mutate(model = "bt 1") |> 
   bind_rows(
-    tuned_en_2 |>
+    tuned_bt_2 |>
       show_best("accuracy") |> 
-      slice_min(mean) |> 
+      slice_max(mean) |> 
       mutate(model = "bt 2") 
   ) |> 
   pivot_wider(names_from = .metric,
@@ -90,19 +89,24 @@ tuned_bt |>
   select(`Model` = model,
          `Accuracy` = accuracy,
          `STD Error` = std_err)
-
+#.881
 tuned_bt |> 
   show_best("roc_auc") |>
-  slice_min(mean) |> 
+  slice_max(mean) |> 
   mutate(model = "bt 1") |> 
   bind_rows(
-    tuned_en_2 |>
-      show_best("accuracy") |> 
-      slice_min(mean) |> 
+    tuned_bt_2 |>
+      show_best("roc_auc") |> 
+      slice_max(mean) |> 
       mutate(model = "bt 2") 
-  ) 
+  ) |> 
+  pivot_wider(names_from = .metric,
+              values_from = mean) |> 
+  select(`Model` = model,
+         roc_auc,
+         `STD Error` = std_err)
 
-# looking at accuracy of models
+# looking at accuracy of all models
 acc_table <- null_fit |> 
   collect_metrics() |> 
   mutate(model = "Null") |> 
@@ -115,7 +119,7 @@ acc_table <- null_fit |>
     ) |> bind_rows(
       tuned_rf |> 
         show_best("accuracy") |> 
-        slice_min(mean) |> 
+        slice_max(mean) |> 
         select(mean, std_err, .metric) |> 
         mutate(model = "Random Forest")
       ) |>
@@ -127,29 +131,30 @@ acc_table <- null_fit |>
     ) |> bind_rows(
       tuned_en_2 |> 
         show_best("accuracy") |> 
-        slice_min(mean) |> 
+        slice_max(mean) |> 
+        slice_head(n = 1) |> 
         select(mean, std_err, .metric) |> 
         mutate(model = "Elastic Net")
     ) |> 
   bind_rows(
-    tuned_bt |> 
+    tuned_bt_2 |> 
       show_best("accuracy") |> 
-      slice_min(mean) |> 
+      slice_max(mean) |> 
       select(mean, std_err, .metric) |> 
       mutate(model = "Boosted Tree")
   ) |>
   filter(.metric == "accuracy") |> 
   arrange(mean) |> 
   pivot_wider(names_from = .metric,
-              values_from = mean) |> 
+              values_from = mean)   |> 
   select(`Model` = model,
-         `Accuracy` = accuracy,
+         accuracy,
          `STD Error` = std_err)
 
-# looking at roc_auc
+# looking at roc_auc of all models
 roc_auc_tbl <- tuned_rf |> 
   show_best("roc_auc") |> 
-  slice_min(mean) |> 
+  slice_max(mean) |> 
   select(mean, std_err, .metric) |> 
   mutate(model = "Random Forest") |> 
   bind_rows(
@@ -173,14 +178,15 @@ roc_auc_tbl <- tuned_rf |>
   bind_rows(
       tuned_en_2 |> 
         show_best("roc_auc") |> 
-        slice_min(mean) |> 
+        slice_max(mean) |> 
+        slice_head(n = 1) |> 
         select(mean, std_err, .metric) |> 
         mutate(model = "Elastic Net")
     ) |>  
   bind_rows(
-    tuned_bt |> 
+    tuned_bt_2 |> 
       show_best("roc_auc") |> 
-      slice_min(mean) |> 
+      slice_max(mean) |> 
       select(mean, std_err, .metric) |> 
       mutate(model = "Boosted Tree")
   ) |> 

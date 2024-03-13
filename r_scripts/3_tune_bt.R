@@ -23,7 +23,10 @@ load(here("recipes/recipe_tree.rda"))
 
 # model specifications ----
 bt_spec <-
-  boost_tree(trees = tune(), learn_rate = tune(), mtry = tune(), min_n = tune()) |> 
+  boost_tree(trees = tune(range = c(100, 750)),
+             learn_rate = tune(),
+             mtry = tune(),
+             min_n = tune()) |> 
   set_engine("xgboost") |> 
   set_mode("classification")
 
@@ -35,12 +38,13 @@ bt_wflow <-
 
 # hyperparameter tuning values ----
 bt_params <- extract_parameter_set_dials(bt_spec) |> 
-  update(mtry = mtry(range = c(1, 14)),
-         min_n = min_n(range = c(1, 10)),
-         learn_rate = learn_rate(range = c(0.01, 0.1)))
+  update(mtry = mtry(range = c(3, 18)),
+         learn_rate = learn_rate(range = c(0.01, 0.3),
+                                 trans = scales::identity_trans())
+         )
 
 # build tuning grid
-bt_grid <- grid_regular(bt_params, levels = 5)
+bt_grid <- grid_regular(bt_params, levels = c(1, 3, 5))
 
 # fit workflow/model ----
 # set seed

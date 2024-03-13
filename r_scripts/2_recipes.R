@@ -59,10 +59,7 @@ recipe_lm_2 |>
 # build tree recipe ----
 # recipe 1
 recipe_tree <- recipe(target ~ ., data = student_train) |>
-  step_dummy(all_nominal_predictors(), one_hot = TRUE) |> 
-  step_nzv(all_predictors()) |> 
-  step_center(all_predictors()) |> 
-  step_scale(all_predictors())
+  step_dummy(all_nominal_predictors(), one_hot = TRUE) 
 
 recipe_tree |> 
   prep() |> 
@@ -72,14 +69,15 @@ recipe_tree |>
 # recipe 2
 recipe_tree_2 <- recipe(target ~ ., data = student_train) |>
   step_dummy(all_nominal_predictors(), one_hot = TRUE) |> 
-  step_interact(terms = ~ mothers_occupation:fathers_occupation) |>
-  step_interact(terms = ~ mothers_qualification:fathers_qualification) |>
-  step_interact(terms = ~ ends_with("1st_sem_credited"):ends_with("2nd_sem_credited")) |>
-  step_interact(terms = ~ ends_with("1st_sem_enrolled"):ends_with("2nd_sem_enrolled")) |>
-  step_interact(terms = ~ ends_with("1st_sem_evaluations"):ends_with("2nd_sem_evaluations")) |>
-  step_interact(terms = ~ ends_with("1st_sem_approved"):ends_with("2nd_sem_approved")) |>
-  step_interact(terms = ~ ends_with("1st_sem_grade"):ends_with("2nd_sem_grade")) |>
-  step_interact(terms = ~ ends_with("1st_sem_without_evaluations"):ends_with("2nd_sem_without_evaluations"))
+  step_cut(inflation_rate, breaks = 2) |>
+  step_cut(gdp, breaks = 2) |>
+  step_nzv(all_predictors()) |> 
+  step_normalize(all_numeric_predictors())
+
+recipe_tree_2 |> 
+  prep() |> 
+  bake(new_data = NULL) |> 
+  glimpse()
 
 # build nbayes recipe ----
 recipe_naive_bayes <- recipe(target ~ ., data = student_train) |> 
