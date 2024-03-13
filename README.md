@@ -15,6 +15,8 @@ This project  xxxx
 
 - `Angwenyi_Chelsea_executive_summary.html`: An html file rendered from the QMD file
 - `Angwenyi_Chelsea_executive_summary.qmd`: A qmd file 
+- `Angwenyi_Chelsea_final_report.html`: An html file rendered from the QMD file
+- `Angwenyi_Chelsea_final_report.qmd`: A qmd file 
 
 
 

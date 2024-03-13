@@ -1,0 +1,56 @@
+---
+title: "Predicting Students College Enrollment Outcomes"
+subtitle: |
+  | Final Project 
+  | Data Science 2 with R (STAT 301-2)
+
+format: html
+editor: visual
+author: Chelsea Angwenyi
+date: today
+---
+
+::: {.callout-tip icon="false"}
+## Github Repo Link
+
+[My Github Repo URL](https://github.com/stat301-2-2024-winter/final-project-2-chelsea-a/tree/main)
+:::
+
+
+## Introduction
+
+This project looks at students enrolled in a Portugal college and uses their demographics, academic path, and more to predict their enrollment outcomes. This is a multiclass classification task and predicts whether an undergraduate student drops out, graduates, or remains enrolled in the institution.
+
+The UC Irvine Machine Learning Repository is a collection of databases, domain theories, and data generators that are used by the machine learning community for the empirical analysis of machine learning algorithms. The dataset was created in a project that aims to contribute to the reduction of academic dropout and failure in higher education, by using machine learning techniques to identify students at risk at an early stage of their academic path, so that strategies to support them can be put into place. Therefore a predictive model would be used for reasons that would be able to find factors that put students at higher chance of dropping out and provide recources to them so that they can achieve their degree. 
+
+The data holds over four thousand observations of student outcomes at this school with 36 predictor variables. It uses variables related to semester credits, grades, and area of study, as well as individual factors such as marital status and whether they had daytime or evening classes. I wanted to learn more about what some factors were that make some students more likely to drop out than others.
+
+I chose this dataset because I have an interest in social policy and have learned a lot about education policy in my studies. I have also been able to learn specifically about colleges and saw this dataset as an opportunity to learn more about education and student outcomes in college. Therefore, some initial things that I wanted to explore are all of the predictors that impact enrollment outcomes, if at all, and which factors made the best predictor.
+
+## Data Overview
+
+At minimum the response variable should be explored and analyzed in detail. Along with an inspection of the data for missingness and severe class imbalance of categorical data. The previous analyses should be conducted on the entire dataset.
+
+Further exploration such as exploring relationships and transformations should be conducted on either a standalone dataset used only for an EDA or some portion of the training dataset from the initial split (can put it back into the training set when building models). Data from the final testing dataset (performance dataset) should not be used for this. This is a key step in feature engineering. A thorough Exploratory Data Analysis might be called for, especially if the data is completely new to you, but make sure it is not completed on the entire dataset! Such an EDA could be put in an appendix and only a short summary could be discussed in this section.
+
+## Methods
+
+Should cover the data splitting procedure and clearly identify what type of prediction problem it is. State and describe the model types you will be fitting. Describe any parameters that will be tuned. Describe what recipes will be used. Describe the resampling technique used. In some cases an extended discussion about recipe variations might be useful. Especially if students are using recipe variation to try and explore the predictive importance of certain variables. Explain the metric that will be used to compare and ultimately used to select a final model.
+
+## Model Building & Selection
+
+Should reiterate the metric that will be used to compare models and determine which will be the final/winning model. Include a table of the best performing model results. Review and analysis of tuning parameters should happen here. Should further tuning be explored? Or how should tuning be adjusted when fitting data like this in the future. This would be a good section to describe what the best parameters were for each model type. Could include a discussion comparing any systematic differences in performance between model types or recipes. If variations in recipes were used to explore predictive importance of certain variables, then it should be discussed here. The section will likely end with the selection of the final/winning model (provide your reasoning). Was it surprising or not surprising that this particular model won? Explain.
+
+## Final Model Analysis
+
+This is where you fit your final/winning model to the testing data. Assess the final model’s performance with at least the metric used to determine the winning model, but it is also advisable to use other performance metrics (especially ones that might be easier to communicate/understand). Should include an exploration of predictions vs the true values (graph) or a confusion matrix (table). Remember to consider the scale of your outcome variable at this time — did you transform the target variable? If a transformation was used, then you should consider conducting analyses on both the original and transformed scale of the target variable. Is the model any good? It might be the best of the models you tried, but does the effort of building a predictive model really pay off — is it that much better than a baseline/null model? Were there any features of the model you selected that make it the best (e.g. fits nonlinearity well)?
+
+## Conclusion
+
+State any conclusions or discoveries/insights. This is a great place for future work, new research questions, and next steps.
+
+## References
+
+M.V.Martins, D. Tolledo, J. Machado, L. M.T. Baptista, V.Realinho. (2021) "Early prediction of student’s performance in higher education: a case study" Trends and Applications in Information Systems and Technologies, vol.1, in Advances in Intelligent Systems and Computing series. Springer. DOI: 10.1007/978-3-030-72657-7_16 https://archive.ics.uci.edu/dataset/697/predict+students+dropout+and+academic+success
+
+This dataset is supported by the program SATDAP - Capacitação da Administração Pública under grant POCI-05-5762-FSE-000191, Portugal.
