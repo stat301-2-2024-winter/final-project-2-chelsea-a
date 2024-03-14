@@ -45,6 +45,23 @@ student_data <- read_delim(here("data/data.csv"), delim=";") |>
          target = factor(target, levels = c("Dropout", "Enrolled", "Graduate"))
   )
 
+data_summary <- student_data |> 
+  group_by(target) |> 
+  summarize(count = n())
+
+count_plot <- ggplot(data_summary, aes(x = reorder((target), -count), y = count)) +
+  geom_bar(stat = "identity", aes(fill = target)) +
+  geom_text(aes(label = scales::percent(count/sum(count)), y = count),
+            position = position_stack(vjust = 0.5), color = "white") +
+  labs(NULL,
+       x = NULL,
+       y = "Count",
+       fill = NULL,
+       caption = "Source: (UC Irvine)") +
+  theme_minimal()
+
+ggsave("figures/count_plot.png", count_plot, width = 8, height = 6)
+
 # initial skim
 ggplot(student_data, aes(target)) +
   geom_bar(fill = "skyblue", color = "black") +

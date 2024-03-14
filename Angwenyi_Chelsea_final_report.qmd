@@ -3,11 +3,21 @@ title: "Predicting Students College Enrollment Outcomes"
 subtitle: |
   | Final Project 
   | Data Science 2 with R (STAT 301-2)
-
-format: html
-editor: visual
 author: Chelsea Angwenyi
 date: today
+
+format:
+  html:
+    toc: true
+    toc-depth: 4
+    embed-resources: true
+    code-fold: show
+    link-external-newwindow: true
+    
+execute:
+  warning: false
+  
+from: markdown+emoji  
 ---
 
 ::: {.callout-tip icon="false"}
@@ -16,30 +26,75 @@ date: today
 [My Github Repo URL](https://github.com/stat301-2-2024-winter/final-project-2-chelsea-a/tree/main)
 :::
 
+```{r}
+#| label: load-packages
+#| echo: false
+library(tidyverse)
+library(tidymodels) 
+library(here)
+```
 
 ## Introduction
 
 This project looks at students enrolled in a Portugal college and uses their demographics, academic path, and more to predict their enrollment outcomes. This is a multiclass classification task and predicts whether an undergraduate student drops out, graduates, or remains enrolled in the institution.
 
-The UC Irvine Machine Learning Repository is a collection of databases, domain theories, and data generators that are used by the machine learning community for the empirical analysis of machine learning algorithms. The dataset was created in a project that aims to contribute to the reduction of academic dropout and failure in higher education, by using machine learning techniques to identify students at risk at an early stage of their academic path, so that strategies to support them can be put into place. Therefore a predictive model would be used for reasons that would be able to find factors that put students at higher chance of dropping out and provide recources to them so that they can achieve their degree. 
+The UC Irvine Machine Learning Repository is a collection of databases, domain theories, and data generators that are used by the machine learning community for the empirical analysis of machine learning algorithms. The dataset was created in a project that aims to contribute to the reduction of academic dropout and failure in higher education, by using machine learning techniques to identify students at risk at an early stage of their academic path, so that strategies to support them can be put into place. Therefore a predictive model would be used for reasons that would be able to find factors that put students at higher chance of dropping out and provide recources to them so that they can achieve their degree.
 
-The data holds over four thousand observations of student outcomes at this school with 36 predictor variables. It uses variables related to semester credits, grades, and area of study, as well as individual factors such as marital status and whether they had daytime or evening classes. I wanted to learn more about what some factors were that make some students more likely to drop out than others.
+The data was acquired from several disjoint databases and holds over four thousand observations of student outcomes at this school with 36 predictor variables. It uses variables related to semester credits, grades, and area of study, as well as individual factors such as marital status and whether they had daytime or evening classes. I wanted to learn more about what some factors were that make some students more likely to drop out than others.
 
 I chose this dataset because I have an interest in social policy and have learned a lot about education policy in my studies. I have also been able to learn specifically about colleges and saw this dataset as an opportunity to learn more about education and student outcomes in college. Therefore, some initial things that I wanted to explore are all of the predictors that impact enrollment outcomes, if at all, and which factors made the best predictor.
 
 ## Data Overview
 
-At minimum the response variable should be explored and analyzed in detail. Along with an inspection of the data for missingness and severe class imbalance of categorical data. The previous analyses should be conducted on the entire dataset.
+Upon initial exploration of the target variable on the entire dataset, it becomes evident that there is a severe class imbalance. There is a total of 4,424 observations and out of these about 20% remain enrolled, 32% dropped out, and a whopping 50% graduate in this dataset. Additionally, data was published completely clean with zero missingness on any of the variables. See @fig-name-of-figure
 
-Further exploration such as exploring relationships and transformations should be conducted on either a standalone dataset used only for an EDA or some portion of the training dataset from the initial split (can put it back into the training set when building models). Data from the final testing dataset (performance dataset) should not be used for this. This is a key step in feature engineering. A thorough Exploratory Data Analysis might be called for, especially if the data is completely new to you, but make sure it is not completed on the entire dataset! Such an EDA could be put in an appendix and only a short summary could be discussed in this section.
+![Distribution of Student Enrollment Outcomes](figures/count_plot.png){#fig-name-of-figure}
 
 ## Methods
 
-Should cover the data splitting procedure and clearly identify what type of prediction problem it is. State and describe the model types you will be fitting. Describe any parameters that will be tuned. Describe what recipes will be used. Describe the resampling technique used. In some cases an extended discussion about recipe variations might be useful. Especially if students are using recipe variation to try and explore the predictive importance of certain variables. Explain the metric that will be used to compare and ultimately used to select a final model.
+For my classification model, I allocated 80% of the data to the training set, ensuring that a substantial portion of the data is allocated for training our models. The remaining 20% was allocated to the testing set and left unseen. Since there is a significant imbalance amongst the classes in the target variable, I stratified by the target variable to ensure that my data subsets are balanced. Considering that my prediction model is for multiclass classification problems, I chose compatible model types for my data. These are the random forest, boosted tree, multinomial, elastic net, and K-nearest neighbor model. Additionally, I used a naive Bayes model for my baseline model along with a null model.
+
+For my data, I chose to employ cross-validation folds (student_folds) with 10 folds and 5 repeats. By dividing the data into multiple folds and repeating the process several times, we ensure that each observation in the dataset is used for both training and testing at least once. This approach helps mitigate the risk of overfitting and provides a more accurate assessment of the model's performance. Like the initial split, I stratified the cross-validation folds based on the target variable. This ensures that each fold contains a representative sample of the different classes within the target variable, enhancing the reliability of our model evaluation.
+
+I made three models for my linear model recipe, one as a base model and two as models that I would go forward with. I made the base model with only one operation to assess the performance of my following recipes and note whether the added operations are making it better or worse. I have two tree-based recipes, and lastly, I have a recipe for my naive Bayes model. Ultimately, I will be using the accuracy metric to compare and assess each model. This metric measures the percentage of correct predictions. For all models, I used parallel processing to speed up computation.
 
 ## Model Building & Selection
 
-Should reiterate the metric that will be used to compare models and determine which will be the final/winning model. Include a table of the best performing model results. Review and analysis of tuning parameters should happen here. Should further tuning be explored? Or how should tuning be adjusted when fitting data like this in the future. This would be a good section to describe what the best parameters were for each model type. Could include a discussion comparing any systematic differences in performance between model types or recipes. If variations in recipes were used to explore predictive importance of certain variables, then it should be discussed here. The section will likely end with the selection of the final/winning model (provide your reasoning). Was it surprising or not surprising that this particular model won? Explain.
+I will be using the accuracy metric to assess all of the models. To start, the null and the naive Bayes models performed the worst, as expected, considering they are baseline models. From there, my linear models, KNN, and tree based models performed better. I will evaluate each of these.
+
+
+```{r}
+#| echo: FALSE
+#| label: acc-tbl
+read_csv(here("figures/acc_table.csv")) |> 
+  knitr::kable(digits = c(NA, 3, 4),
+               caption = "Model Accuracy Metrics")
+```
+
+### Linear Models
+The multinomial and elastic net models, both performed best from my most complex linear recipe. I used a correlation plot to detect hidden patterns among variables that could affect the target variable. In @fig-cor-plot, I found that there was a very strong correlation between academic factors such as semester units credited, units evaluated, units enrolled, units approved, and semester grades. There was also a perfect correlation between mothers' and fathers' occupations. This led me to add interactions between everything that had a perfect correlation to my recipe. I also added an interaction between the variables mothers' qualification and fathers' qualification, as these identified parents' highest level of education which  I believed to be relevant for predicting student outcomes. Lastly, I included an interaction between the semesters without evaluations because I also believed this could be a predictor specifically for dropout.
+
+
+
+![Correlation Plot](figures/correlation_plot3.png){#fig-cor-plot}
+
+For the multinomial model specifications, I added a penalty parameter of 0 to avoid regularization and fit the model to the folds. For the elastic net model specifications, I tuned both the penalty and the mixture. For hyperparameter tuning, I created a grid of tuning values and specified five levels for each hyperparameter. Overall, the multinomial model and elastic net model had the same accuracy of .769 with the Elastic Net having a slightly lower standard of error. Therefore, these models predicted around 77% of the outcomes correctly in the multiclass data.
+
+### K-nearest neighbor Model
+For the knn model, I could use either my tree-based or linear model recipes. From what research showed and my model performance, I decided to fit the knn model on my tree-based recipe. It performed best with my second recipe which removed predictor variables. The recipe had all of the same steps as the other tree-based recipe only it removed GDP, inflation rate, unemployment rate, fathers qualification, mothers qualification, fathers occupation, and mothers occupation. I removed predictors on parents' qualifications and occupation because they had so many levels that they could just be ineffective predictors. I also removed GDP, inflation rate, and unemployment rate because considering we were talking about individuals, these seemed irrelevant to the task. This is the recipe the knn model performed best with despite the tree based with. I found this interesting because the tree-based models performed better without the predictors removed.
+
+Moving to model specifications, I specified key hyperparameters such as the number of neighbors, the weight function, and the distance power. The tuning grid for this model also uses three levels. The resulting accuracy was .734 or about 73% in predictive accuracy.
+
+### Tree-based Models
+The tree-based models, random forest, and boosted tree both performed best from my basic tree recipe. I used a recipe that centered and scaled all numeric predictors, dummied all categorical variables, and removed variables that were highly sparse and unbalanced. This is the recipe that my tree-based models performed the best with. For the random forest model, adjustments showed that 1000 trees led to the best performance. I tuned the mtry and the min_n, specifically updating the range of mtry parameter to vary between 6 and 18. Further, I chose 5 levels for optimal results in my hyperparameters.
+
+In the boosted tree defining key hyperparameters such as the number of trees, learning rate, the number of variables randomly sampled at each split, and the minimum number of data points in a node. Specifically, I set the range for the number of trees to vary between 100 and 750, mtry to range from 3 to 18, and the learning rate to range between 0.01 and 0.3. I went with three levels to balance performance with efficiency with this model.
+
+Overall, the boosted tree performed better than the random forest at .779 and .775 respectively. With the accuracy of the boosted tree predicting 78% of the outcomes correctly it performs better than the random forest and the linear models.
+
+### The best model
+
+In summary the boosted tree performed best in comparison to every model with an accuracy of 78%. This is not suprising considering that the boosted tree model is a complex model that creates a series of decision trees to produce a final prediction. These models also took the longest to run which fortunately, corresponded to better predictions.
 
 ## Final Model Analysis
 

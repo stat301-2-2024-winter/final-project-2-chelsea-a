@@ -66,7 +66,7 @@ acc_table <- null_fit |>
   pivot_wider(names_from = .metric,
               values_from = mean)   |> 
   select(`Model` = model,
-         accuracy,
+         `Accuracy` = accuracy,
          `STD Error` = std_err)
 
 # looking at roc_auc of all models

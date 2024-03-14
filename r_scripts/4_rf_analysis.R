@@ -50,4 +50,4 @@ tuned_rf |>
          roc_auc,
          `STD Error` = std_err) 
 
-# rf 1 is worse in accuracy and roc_auc
+# rf 1 is better in accuracy and roc_auc

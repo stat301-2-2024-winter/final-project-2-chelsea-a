@@ -2,6 +2,7 @@
 
 ### R scripts
 
+- `00_data_analysis.R`: initial data skim
 - `1_initial_setup_ex1.R`: initial data split & forming of resamples
 - `2_recipes.R`: data preprocessing/feature engineering for various models
 - `3_fit_baseline.R`: fitting of baseline(s) to resamples 

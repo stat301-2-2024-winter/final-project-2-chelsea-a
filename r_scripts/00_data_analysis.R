@@ -43,33 +43,33 @@ student_data <- read_delim(here("data/data.csv"), delim=";") |>
          international = factor(international,
                                 levels = c(0, 1),
                                 labels = c("No", "Yes")),
-         target = factor(target)) 
-  # rename(mqual = mothers_qualification,
-  #        dqual = fathers_qualification,
-  #        mjob = mothers_occupation,
-  #        djob = fathers_occupation,
-  #        admit_gr = admission_grade,
-  #        pr_qual = previous_qualification,
-  #        pr_qual_grade = previous_qualification_grade,
-  #        age = age_at_enrollment,
-  #        unemp = unemployment_rate,
-  #        int = international,
-  #      cred_1st = curricular_units_1st_sem_credited,
-  #      enr_1st = curricular_units_1st_sem_enrolled,
-  #      eval_1st = curricular_units_1st_sem_evaluations,
-  #      appr_1st = curricular_units_1st_sem_approved,
-  #      grade_1st = curricular_units_1st_sem_grade,
-  #      noeval_1st = curricular_units_1st_sem_without_evaluations,
-  #      cred_2nd = curricular_units_2nd_sem_credited,
-  #      enr_2nd = curricular_units_2nd_sem_enrolled,
-  #      eval_2nd = curricular_units_2nd_sem_evaluations,
-  #      appr_2nd = curricular_units_2nd_sem_approved,
-  #      grade_2nd = curricular_units_2nd_sem_grade,
-  #      noeval_2nd = curricular_units_2nd_sem_without_evaluations,
-  #        infl_rate = inflation_rate,
-  #      app_mode = application_mode,
-  #      app_order = application_order    
-  # )
+         target = factor(target)) |> 
+  rename(mqual = mothers_qualification,
+         dqual = fathers_qualification,
+         mjob = mothers_occupation,
+         djob = fathers_occupation,
+         admit_gr = admission_grade,
+         pr_qual = previous_qualification,
+         pr_qual_grade = previous_qualification_grade,
+         age = age_at_enrollment,
+         unemp = unemployment_rate,
+         int = international,
+       cred_1st = curricular_units_1st_sem_credited,
+       enr_1st = curricular_units_1st_sem_enrolled,
+       eval_1st = curricular_units_1st_sem_evaluations,
+       appr_1st = curricular_units_1st_sem_approved,
+       grade_1st = curricular_units_1st_sem_grade,
+       noeval_1st = curricular_units_1st_sem_without_evaluations,
+       cred_2nd = curricular_units_2nd_sem_credited,
+       enr_2nd = curricular_units_2nd_sem_enrolled,
+       eval_2nd = curricular_units_2nd_sem_evaluations,
+       appr_2nd = curricular_units_2nd_sem_approved,
+       grade_2nd = curricular_units_2nd_sem_grade,
+       noeval_2nd = curricular_units_2nd_sem_without_evaluations,
+         infl_rate = inflation_rate,
+       app_mode = application_mode,
+       app_order = application_order
+  )
 
 # initial skim
 student_data |> skimr::skim_without_charts()
@@ -80,7 +80,7 @@ student_data |> names()
 numeric_variables <- sapply(student_data, is.numeric)
 correlation_matrix <- cor(student_data[, numeric_variables])
 ggcorr_plot <- ggcorr(correlation_matrix, label = TRUE)
-ggsave("figures/correlation_plot2.png", ggcorr_plot,  width = 8, height = 6)
+ggsave("figures/correlation_plot3.png", ggcorr_plot,  width = 8, height = 6)
 # what has high correlation 
 # mom and dad job
 # mom and dad qual
@@ -132,6 +132,10 @@ ggplot(student_data, aes(target)) +
   geom_bar(fill = "skyblue", color = "black") +
   theme_minimal() +
   labs(x = "Target Variable", y = "Count", title = "Distribution of Target Variable")
+
+student_data |> 
+  count(target) |> 
+  mutate(percentage = n / sum(n) * 100)
 
 # gender and semester grade
 ggplot(student_data, aes(gender, curricular_units_1st_sem_grade)) +
@@ -223,3 +227,4 @@ student_data |>
 student_data |> 
   geom_bar(fill = "skyblue", color = "black") +
   theme_minimal()
+
