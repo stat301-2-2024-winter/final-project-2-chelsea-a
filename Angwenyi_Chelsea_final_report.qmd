@@ -115,9 +115,10 @@ I then visualized the class-wise accuracy of the model using a bar graph. In @fi
 
 I will also evaluate the model using the area under the ROC curve, the ROC AUC. This metric calibrates the trade-off between sensitivity and specificity at the best-chosen threshold and is regarded as an important measure of how good an algorithm is. The ROC AUC value ranges from 0 to 1, where 0 represents a model that makes all predictions incorrectly, and 1 represents a perfect model that makes all predictions correctly. The ROC AUC for the final model was .890 whereas for my baseline it was .787 which indicates that the final model's ability to distinguish between positive and negative classes is high.
 
-Next, I plotted ROC curves for each class to give insights into the model's ability to distinguish between different classes. The ROC curve in @fig-student-roc-curve also shows that the model is very well at predicting graduates, good at predicting dropouts, and not so well at predicting students who remained enrolled. 
+Next, I plotted ROC curves for each class to give insights into the model's ability to distinguish between different classes. The ROC curve in @fig-roc-curve also shows that the model is very well at predicting graduates, good at predicting dropouts, and not so well at predicting students who remained enrolled. 
 
-![ROC curve](figures/student_curve.png){#fig-student-roc-curve}
+![Roc Curve](figures/student_curve.png){#fig-roc-curve}
+
  In summary, there are some features of the model that made it the best. Since I used a boosted tree model, it possesses the flexibility to capture nonlinearity in the model well. It used 750 trees and decision trees are inherently flexible and can model intricate interactions between features. With this model, I did not remove any predictors from the recipe, indicating the model found interactions between those predictors. I also believe that the low learn rate of .01 improved the model's generalization performance.
  
 ## Conclusion
