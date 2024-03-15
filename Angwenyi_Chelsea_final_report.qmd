@@ -1,5 +1,5 @@
 ---
-title: "Predicting Students College Enrollment Outcomes"
+title: "Predicting Students' College Enrollment Outcomes"
 subtitle: |
   | Final Project 
   | Data Science 2 with R (STAT 301-2)
@@ -38,7 +38,7 @@ library(here)
 
 This project looks at students enrolled in a Portugal college and uses their demographics, academic path, and more to predict their enrollment outcomes. This is a multiclass classification task and predicts whether an undergraduate student drops out, graduates, or remains enrolled in the institution.
 
-The UC Irvine Machine Learning Repository is a collection of databases, domain theories, and data generators that are used by the machine learning community for the empirical analysis of machine learning algorithms. The dataset was created in a project that aims to contribute to the reduction of academic dropout and failure in higher education, by using machine learning techniques to identify students at risk at an early stage of their academic path, so that strategies to support them can be put into place. Therefore a predictive model would be used for reasons that would be able to find factors that put students at higher chance of dropping out and provide recources to them so that they can achieve their degree.
+The UC Irvine Machine Learning Repository is a collection of databases, domain theories, and data generators that are used by the machine learning community for the empirical analysis of machine learning algorithms. The dataset was created in a project that aims to contribute to the reduction of academic dropout and failure in higher education, by using machine learning techniques to identify students at risk at an early stage of their academic path, so that strategies to support them can be put into place. Therefore a predictive model would be used for reasons that would be able to find factors that put students at a higher chance of dropping out and provide resources to them so that they can achieve their degree.
 
 The data was acquired from several disjoint databases and holds over four thousand observations of student outcomes at this school with 36 predictor variables. It uses variables related to semester credits, grades, and area of study, as well as individual factors such as marital status and whether they had daytime or evening classes. I wanted to learn more about what some factors were that make some students more likely to drop out than others.
 
@@ -60,7 +60,7 @@ I made three models for my linear model recipe, one as a base model and two as m
 
 ## Model Building & Selection
 
-I will be using the accuracy metric to assess all of the models. To start, the null and the naive Bayes models performed the worst, as expected, considering they are baseline models. From there, my linear models, KNN, and tree based models performed better. I will evaluate each of these.
+I will be using the accuracy metric to assess all of the models. To start, the null and the naive Bayes models performed the worst, as expected, considering they are baseline models. From there, my linear models, KNN, and tree-based models performed better. I will evaluate each of these.
 
 
 ```{r}
@@ -81,12 +81,12 @@ The multinomial and elastic net models, both performed best from my most complex
 For the multinomial model specifications, I added a penalty parameter of 0 to avoid regularization and fit the model to the folds. For the elastic net model specifications, I tuned both the penalty and the mixture. For hyperparameter tuning, I created a grid of tuning values and specified five levels for each hyperparameter. Overall, the multinomial model and elastic net model had the same accuracy of .769 with the Elastic Net having a slightly lower standard of error. Therefore, these models predicted around 77% of the outcomes correctly in the multiclass data.
 
 ### K-nearest neighbor Model
-For the knn model, I could use either my tree-based or linear model recipes. From what research showed and my model performance, I decided to fit the knn model on my tree-based recipe. It performed best with my second recipe which removed predictor variables. The recipe had all of the same steps as the other tree-based recipe only it removed GDP, inflation rate, unemployment rate, fathers qualification, mothers qualification, fathers occupation, and mothers occupation. I removed predictors on parents' qualifications and occupation because they had so many levels that they could just be ineffective predictors. I also removed GDP, inflation rate, and unemployment rate because considering we were talking about individuals, these seemed irrelevant to the task. This is the recipe the knn model performed best with despite the tree based with. I found this interesting because the tree-based models performed better without the predictors removed.
+For the KNN model, I could use either my tree-based or linear model recipes. From what research showed and my model performance, I decided to fit the KNN model on my tree-based recipe. It performed best with my second recipe which centered and scaled all numeric predictors, dummied categorical variables, and removed highly sparse variables. Beyond this, it removed several predictor variables. The recipe removed GDP, inflation rate, unemployment rate, fathers qualification, mothers qualification, fathers occupation, and mothers occupation. I removed the predictors on parents' qualifications and occupations because I believed that the high number of levels could make them ineffective predictors. I also removed GDP, inflation rate, and unemployment rate because considering the observations were all individuals, these seemed irrelevant to the task. This is the recipe the KNN model performed best with.
 
 Moving to model specifications, I specified key hyperparameters such as the number of neighbors, the weight function, and the distance power. The tuning grid for this model also uses three levels. The resulting accuracy was .734 or about 73% in predictive accuracy.
 
 ### Tree-based Models
-The tree-based models, random forest, and boosted tree both performed best from my basic tree recipe. I used a recipe that centered and scaled all numeric predictors, dummied all categorical variables, and removed variables that were highly sparse and unbalanced. This is the recipe that my tree-based models performed the best with. For the random forest model, adjustments showed that 1000 trees led to the best performance. I tuned the mtry and the min_n, specifically updating the range of mtry parameter to vary between 6 and 18. Further, I chose 5 levels for optimal results in my hyperparameters.
+The tree-based models, random forest, and boosted tree both performed best from my basic tree recipe. I used a recipe that centered and scaled all numeric predictors, dummied all categorical variables, and removed variables that were highly sparse and unbalanced. This is the recipe that my tree-based models performed the best with which I found interesting because the KNN performed worse with this recipe. For the random forest model, adjustments showed that 1000 trees led to the best performance. I tuned the mtry and the min_n, specifically updating the range of mtry parameter to vary between 6 and 18. Further, I chose 5 levels for optimal results in my hyperparameters.
 
 In the boosted tree defining key hyperparameters such as the number of trees, learning rate, the number of variables randomly sampled at each split, and the minimum number of data points in a node. Specifically, I set the range for the number of trees to vary between 100 and 750, mtry to range from 3 to 18, and the learning rate to range between 0.01 and 0.3. I went with three levels to balance performance with efficiency with this model.
 
@@ -94,15 +94,40 @@ Overall, the boosted tree performed better than the random forest at .779 and .7
 
 ### The best model
 
-In summary the boosted tree performed best in comparison to every model with an accuracy of 78%. This is not suprising considering that the boosted tree model is a complex model that creates a series of decision trees to produce a final prediction. These models also took the longest to run which fortunately, corresponded to better predictions.
+In summary, the boosted tree performed best in comparison to every model with an accuracy of 78%. This is not surprising considering that the boosted tree model is a complex model that creates a series of decision trees to produce a final prediction. These models also took the longest to run which, fortunately, corresponded to better predictions.
 
 ## Final Model Analysis
+Since the boosted tree performed the best based on accuracy this is the model I chose as my winning model. After fitting it to the entire training set, the final model had an accuracy of 78.4% when applied to testing data. In other words, the final boosted tree model predicted the highest proportion of instances correctly. In comparison, my naive Bayes baseline model's accuracy was at 58.6% which puts my final model above my baseline by a substantial 20% which is generally positive.
 
-This is where you fit your final/winning model to the testing data. Assess the final model’s performance with at least the metric used to determine the winning model, but it is also advisable to use other performance metrics (especially ones that might be easier to communicate/understand). Should include an exploration of predictions vs the true values (graph) or a confusion matrix (table). Remember to consider the scale of your outcome variable at this time — did you transform the target variable? If a transformation was used, then you should consider conducting analyses on both the original and transformed scale of the target variable. Is the model any good? It might be the best of the models you tried, but does the effort of building a predictive model really pay off — is it that much better than a baseline/null model? Were there any features of the model you selected that make it the best (e.g. fits nonlinearity well)?
+I will also use a confusion matrix as a tool for assessing model performance across different classes. A confusion matrix is a table that shows the counts of true positive, true negative, false positive, and false negative predictions for each class. From the confusion matrix, we see that 220 students were correctly predicted as 'Dropout', while 36 students were incorrectly predicted as 'Enrolled' when they were actually a 'Dropout'. Additionally, the model incorrectly predicted 29 students to be a 'Graduate' when they were actually a 'Dropout'. Furthermore, the model correctly predicted 64 students as 'Enrolled', while incorrectly classifying 27 students as a 'Dropout' when they were actually 'Enrolled'. Lastly, the model correctly predicted 411 students as 'Graduate' and incorrectly classified 68 students as 'Enrolled' instead of 'Graduate'. 
 
+```{r}
+#| label: conf-matrix
+#| echo: false
+
+read_rds(here("figures/conf_mat.rds")) |> knitr::kable(caption = "Confusion Matrix")
+
+```
+
+I then visualized the class-wise accuracy of the model using a bar graph. In @fig-acc-of-model, each bar represents a different class, indicating the accuracy of the model in predicting that particular class. The model's accuracy for predicting a graduate was very high at 93%. It also did a good job of predicting whether a student dropped out at 77.2% but a bad job of predicting whether a student was to remain enrolled at 40.3%.
+
+![Class-wise Accuracy of Model](figures/accuracy_plot.png){#fig-acc-of-model}
+
+I will also evaluate the model using the area under the ROC curve, the ROC AUC. This metric calibrates the trade-off between sensitivity and specificity at the best-chosen threshold and is regarded as an important measure of how good an algorithm is. The ROC AUC value ranges from 0 to 1, where 0 represents a model that makes all predictions incorrectly, and 1 represents a perfect model that makes all predictions correctly. The ROC AUC for the final model was .890 whereas for my baseline it was .787 which indicates that the final model's ability to distinguish between positive and negative classes is high.
+
+Next, I plotted ROC curves for each class to give insights into the model's ability to distinguish between different classes. The ROC curve in @fig-student-roc-curve also shows that the model is very well at predicting graduates, good at predicting dropouts, and not so well at predicting students who remained enrolled. 
+
+![ROC curve](figures/student_curve.png){#fig-student-roc-curve}
+ In summary, there are some features of the model that made it the best. Since I used a boosted tree model, it possesses the flexibility to capture nonlinearity in the model well. It used 750 trees and decision trees are inherently flexible and can model intricate interactions between features. With this model, I did not remove any predictors from the recipe, indicating the model found interactions between those predictors. I also believe that the low learn rate of .01 improved the model's generalization performance.
+ 
 ## Conclusion
+Finally, I looked at the importance of features in predicting class outcomes in my model. From @fig-variable-plot, it becomes evident that approved units for both semesters but especially the second semester were the most important predictors in the model. The third most important predictor was second semester grades, which would align with what I would assume. Other important predictors were tuition and fees that were not up to date, the course route of the student, first semester grades, and age at enrollment. This I find interesting because I am curious to know if younger enrollment leads to higher dropout rates or vice versa. 
 
-State any conclusions or discoveries/insights. This is a great place for future work, new research questions, and next steps.
+![Variable Importance Plot](figures/important.png){#fig-variable-plot}
+
+An interesting variable that was also an important predictor was the mother's occupation. Initially, I believed that this variable would not be very useful because of how many occupations there were, however, it proved to be important in the boosted tree model. 
+
+While this data is specifically about a higher education institution in Portugal, valuable findings can be taken from it and applied to institutions around the world. Firstly, there is a very strong correlation between variables concerning academic outcomes and units. Additionally, there is a very high importance of academic outcomes in predicting student graduation and dropout rates. The most important predictor was the number of curricula units approved in the second semester. This school should consider this for policies geared toward increasing graduation rates for their students. 
 
 ## References
 

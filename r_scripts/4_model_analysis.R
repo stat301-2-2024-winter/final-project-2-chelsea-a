@@ -128,3 +128,6 @@ roc_auc_tbl |> knitr::kable()
 
 write_csv(acc_table, here("figures/acc_table.csv"))
 write_csv(roc_auc_tbl, here("figures/roc_auc_tbl.csv"))
+
+read_csv("figures/roc_auc_tbl.csv") |> 
+  knitr::kable(digits = c(NA, 3, 4))

@@ -53,6 +53,7 @@ count_plot <- ggplot(data_summary, aes(x = reorder((target), -count), y = count)
   geom_bar(stat = "identity", aes(fill = target)) +
   geom_text(aes(label = scales::percent(count/sum(count)), y = count),
             position = position_stack(vjust = 0.5), color = "white") +
+  scale_fill_brewer(palette = "Set2") +
   labs(NULL,
        x = NULL,
        y = "Count",
