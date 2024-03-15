@@ -33,7 +33,7 @@ model_accuracy <-
   mutate(Model = "Final Boosted Tree") |> 
   select(Model, Accuracy)
 
-write_csv(model_accuracy, here("figures/model_accuracy.csv"))
+write_csv(model_accuracy, here("figures/final_model_accuracy.csv"))
 
 # find the area under the curve
 pred_prob <- predict(final_fit_bt, student_test, type = "prob")
@@ -50,7 +50,7 @@ model_rocauc <-
   mutate(Model = "Final Boosted Tree") |> 
   select(Model, "ROC AUC")
 
-write_csv(model_rocauc, here("figures/model_rocauc.csv"))
+write_csv(model_rocauc, here("figures/final_model_rocauc.csv"))
 
 # Visualize results 
 student_curve <- roc_curve(student_results, target, c(.pred_Dropout, .pred_Enrolled, .pred_Graduate))
@@ -65,9 +65,6 @@ conf_mat <- conf_mat(student_results, truth = target, estimate = .pred_class)
 conf_mat <- as.data.frame.matrix(conf_mat$table) 
 
 saveRDS(conf_mat, here("figures/conf_mat.rds"))
-
-# model hyperparameters
-extract_spec_parsnip(final_fit_bt)
 
 
            

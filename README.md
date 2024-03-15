@@ -1,5 +1,5 @@
 ## Overview
-This project  xxxx
+This project focuses on developing a predictive model for a multiclass classification task to predict whether an undergraduate student drops out, graduates, or remains enrolled in the institution. Utilizing data from a higher education institution in Portugal, I build several models to find the best model for predicting student outcomes. The project involves the creation of recipes, fitting/tuning models, fitting the best model, and model analysis. 
 
 ### Directories 
 

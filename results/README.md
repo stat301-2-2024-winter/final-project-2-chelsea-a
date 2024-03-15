@@ -15,3 +15,4 @@ Directory contains results from all scripts used for fitting/training and/or tun
 - `fit_null`: Results from fitting a null model/workflow on resamples (`3_fit_baseline.R`)
 - `fit_nbayes`: Results from tuning a naive bayes model/workflow on resamples (`3_fit_baseline.R`)
 - `final_fit_bt`: Results from fitting final boosted tree model/workflow on training data (`5_train_final_model.R`)
+- `student_results`: Prediction results from the final boosted tree model and observed outcome values (`6_assess_final_model.R`)

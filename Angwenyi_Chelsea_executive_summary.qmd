@@ -1,0 +1,55 @@
+---
+title: "Predicting Students' College Enrollment Outcomes: Executive Summary"
+subtitle: |
+  | Final Project Executive Summary
+  | Data Science 2 with R (STAT 301-2)
+author: Chelsea Angwenyi
+date: today
+
+format:
+  html:
+    toc: true
+    toc-depth: 4
+    embed-resources: true
+    code-fold: show
+    link-external-newwindow: true
+    
+execute:
+  warning: false
+  
+from: markdown+emoji  
+---
+
+::: {.callout-tip icon="false"}
+## Github Repo Link
+
+[My Github Repo URL](https://github.com/stat301-2-2024-winter/final-project-2-chelsea-a/tree/main)
+:::
+
+
+## Introduction
+
+This report presents the findings of a project aimed at predicting student enrollment outcomes in a Portugal college using demographic, academic, and other relevant factors. The study employed machine learning techniques to identify students at risk of academic dropout, with the goal of implementing early intervention strategies to support their academic success. The dataset, sourced from the UC Irvine Machine Learning Repository, comprises over 4,000 observations with 36 predictor variables. The primary objective was to understand the factors influencing enrollment outcomes and to develop predictive models for dropout, graduation, and continued enrollment.
+
+## Data Overview
+
+The dataset exhibited a significant class imbalance, with @fig-name-of-figure showing approximately 20% of students remaining enrolled, 32% dropping out, and 50% graduating. Initial exploration of the data revealed no missing values, facilitating seamless analysis. Model building involved the utilization of various classification algorithms, including random forest, boosted tree, multinomial, elastic net, and K-nearest neighbor models, alongside a naive Bayes baseline model. Cross-validation techniques were employed to ensure robust model evaluation, with particular emphasis on accuracy as the primary evaluation metric.
+
+![Distribution of Student Enrollment Outcomes](figures/count_plot.png){#fig-name-of-figure}
+
+
+## Model Building & Selection
+
+Among the models tested, the boosted tree model was the most effective, achieving an accuracy of 78% on the testing data, surpassing the baseline naive Bayes model by a substantial margin. Confusion matrix analysis revealed the model's strengths and weaknesses in predicting different classes, with notable accuracies in predicting graduates and dropouts, but lower accuracy in predicting students who remained enrolled. Further evaluation using ROC AUC demonstrated the model's ability to discriminate between positive and negative classes, with a high ROC AUC value of 0.890, indicating strong predictive performance. A plotted ROC curve seen in @fig-student-roc-curve provided visual insights into the model's ability to accurately predict outcomes for different classes.  
+
+![ROC curve](figures/student_curve.png){#fig-student-roc-curve}
+
+## Final Model Analysis
+
+Variable importance analysis seen in @fig-variable-plot identified key predictors influencing enrollment outcomes, including semester units approved, second-semester grades, tuition status, course route, and age at enrollment. The boosted tree model's flexibility in capturing nonlinearity and intricate interactions between features makes it well-suited for predicting enrollment outcomes. Insights from variable importance analysis underscore the importance of academic performance metrics in predicting graduation and dropout rates, suggesting the need for targeted interventions to support at-risk students. Policy implications include the consideration of academic support programs and interventions aimed at improving graduation rates, particularly for students with lower semester unit approvals and academic performance.
+ 
+![Variable Importance Plot](figures/important.png){#fig-variable-plot}
+ 
+## Conclusion
+
+In conclusion, this study sheds light on the complex interplay of factors influencing student enrollment outcomes in higher education. The findings provide valuable insights for educational institutions worldwide, informing evidence-based strategies to support student success and mitigate dropout rates.

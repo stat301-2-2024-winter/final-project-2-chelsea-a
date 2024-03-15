@@ -36,7 +36,7 @@ library(here)
 
 ## Introduction
 
-This project looks at students enrolled in a Portugal college and uses their demographics, academic path, and more to predict their enrollment outcomes. This is a multiclass classification task and predicts whether an undergraduate student drops out, graduates, or remains enrolled in the institution.
+This report aims to predict student enrollment outcomes in a Portugal higher education institution using demographic, academic, and other relevant factors. Predicting enrollment outcomes is crucial for educational institutions to implement early intervention strategies and support student success. The primary objective is to understand the factors influencing enrollment outcomes such as dropping out, graduating, and continuing enrollment through the construction of an accurate multiclass classification prediction model.
 
 The UC Irvine Machine Learning Repository is a collection of databases, domain theories, and data generators that are used by the machine learning community for the empirical analysis of machine learning algorithms. The dataset was created in a project that aims to contribute to the reduction of academic dropout and failure in higher education, by using machine learning techniques to identify students at risk at an early stage of their academic path, so that strategies to support them can be put into place. Therefore a predictive model would be used for reasons that would be able to find factors that put students at a higher chance of dropping out and provide resources to them so that they can achieve their degree.
 
@@ -76,7 +76,7 @@ The multinomial and elastic net models, both performed best from my most complex
 
 
 
-![Correlation Plot](figures/correlation_plot3.png){#fig-cor-plot}
+![Correlation Plot](figures/correlation_plot.png){#fig-cor-plot}
 
 For the multinomial model specifications, I added a penalty parameter of 0 to avoid regularization and fit the model to the folds. For the elastic net model specifications, I tuned both the penalty and the mixture. For hyperparameter tuning, I created a grid of tuning values and specified five levels for each hyperparameter. Overall, the multinomial model and elastic net model had the same accuracy of .769 with the Elastic Net having a slightly lower standard of error. Therefore, these models predicted around 77% of the outcomes correctly in the multiclass data.
 
@@ -121,16 +121,15 @@ Next, I plotted ROC curves for each class to give insights into the model's abil
  In summary, there are some features of the model that made it the best. Since I used a boosted tree model, it possesses the flexibility to capture nonlinearity in the model well. It used 750 trees and decision trees are inherently flexible and can model intricate interactions between features. With this model, I did not remove any predictors from the recipe, indicating the model found interactions between those predictors. I also believe that the low learn rate of .01 improved the model's generalization performance.
  
 ## Conclusion
+
 Finally, I looked at the importance of features in predicting class outcomes in my model. From @fig-variable-plot, it becomes evident that approved units for both semesters but especially the second semester were the most important predictors in the model. The third most important predictor was second semester grades, which would align with what I would assume. Other important predictors were tuition and fees that were not up to date, the course route of the student, first semester grades, and age at enrollment. This I find interesting because I am curious to know if younger enrollment leads to higher dropout rates or vice versa. 
 
 ![Variable Importance Plot](figures/important.png){#fig-variable-plot}
 
-An interesting variable that was also an important predictor was the mother's occupation. Initially, I believed that this variable would not be very useful because of how many occupations there were, however, it proved to be important in the boosted tree model. 
+An interesting variable that was also an important predictor was the mother's occupation variable. Initially, I believed that this variable would not be very useful considering how many occupations there are, however, it proved to be important in my winning boosted tree model. 
 
-While this data is specifically about a higher education institution in Portugal, valuable findings can be taken from it and applied to institutions around the world. Firstly, there is a very strong correlation between variables concerning academic outcomes and units. Additionally, there is a very high importance of academic outcomes in predicting student graduation and dropout rates. The most important predictor was the number of curricula units approved in the second semester. This school should consider this for policies geared toward increasing graduation rates for their students. 
+Although the dataset pertains specifically to a higher education institution in Portugal, valuable findings can be taken from it and applied to institutions around the world. Notably, there is a very strong correlation between variables concerning curricular units that are enrolled, credited, approved, and evaluated. Particularly noteworthy is the predictive power associated with the number of curricular units approved in the second semester. Overall, higher education institutions could use implement policies such as academic support initiatives and targeted measures to increase graduation rates for their students.
 
 ## References
 
 M.V.Martins, D. Tolledo, J. Machado, L. M.T. Baptista, V.Realinho. (2021) "Early prediction of student’s performance in higher education: a case study" Trends and Applications in Information Systems and Technologies, vol.1, in Advances in Intelligent Systems and Computing series. Springer. DOI: 10.1007/978-3-030-72657-7_16 https://archive.ics.uci.edu/dataset/697/predict+students+dropout+and+academic+success
-
-This dataset is supported by the program SATDAP - Capacitação da Administração Pública under grant POCI-05-5762-FSE-000191, Portugal.
