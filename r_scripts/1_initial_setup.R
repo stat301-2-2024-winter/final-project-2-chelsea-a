@@ -14,36 +14,37 @@ tidymodels_prefer()
 student_data <- read_delim(here("data/data.csv"), delim=";") |> 
   janitor::clean_names() |> 
   rename(nationality = nacionality) |> 
-  mutate(marital_status = factor(marital_status,
-                                 levels = c(1, 2, 3, 4, 5, 6),
-                                 labels = c("Single", "Married", "Widower",
-                                            "Divorced", "Facto union", "Legally separated")),
-         daytime_evening_attendance = factor(daytime_evening_attendance,
-                                             levels = c(0, 1),
-                                             labels = c("Evening", "Daytime")),
-         displaced = factor(displaced,
-                            levels = c(0, 1),
-                            labels = c("No", "Yes")),
-         educational_special_needs = factor(educational_special_needs,
-                                            levels = c(0, 1),
-                                            labels = c("No", "Yes")),
-         debtor = factor(debtor,
-                         levels = c(0, 1),
-                         labels = c("No", "Yes")),
-         tuition_fees_up_to_date = factor(tuition_fees_up_to_date,
-                                          levels = c(0, 1),
-                                          labels = c("No", "Yes")),
-         gender = factor(gender, 
-                         levels = c(0, 1),
-                         labels = c("Female", "Male")),
-         scholarship_holder = factor(scholarship_holder,
+  mutate(
+    marital_status = factor(marital_status,
+                            levels = c(1, 2, 3, 4, 5, 6),
+                            labels = c("Single", "Married", "Widower",
+                                       "Divorced", "Facto union", "Legally separated")),
+    daytime_evening_attendance = factor(daytime_evening_attendance,
+                                        levels = c(0, 1),
+                                        labels = c("Evening", "Daytime")),
+    displaced = factor(displaced,
+                       levels = c(0, 1),
+                       labels = c("No", "Yes")),
+    educational_special_needs = factor(educational_special_needs,
+                                       levels = c(0, 1),
+                                       labels = c("No", "Yes")),
+    debtor = factor(debtor,
+                    levels = c(0, 1),
+                    labels = c("No", "Yes")),
+    tuition_fees_up_to_date = factor(tuition_fees_up_to_date,
                                      levels = c(0, 1),
                                      labels = c("No", "Yes")),
-         international = factor(international,
+    gender = factor(gender, 
+                    levels = c(0, 1),
+                    labels = c("Female", "Male")),
+    scholarship_holder = factor(scholarship_holder,
                                 levels = c(0, 1),
                                 labels = c("No", "Yes")),
-         target = factor(target, levels = c("Dropout", "Enrolled", "Graduate"))
-  )
+    international = factor(international,
+                           levels = c(0, 1),
+                           labels = c("No", "Yes")),
+    target = factor(target, levels = c("Dropout", "Enrolled", "Graduate"))
+    )
 
 data_summary <- student_data |> 
   group_by(target) |> 
