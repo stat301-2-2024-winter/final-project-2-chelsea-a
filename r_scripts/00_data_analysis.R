@@ -43,89 +43,11 @@ student_data <- read_delim(here("data/data.csv"), delim=";") |>
          international = factor(international,
                                 levels = c(0, 1),
                                 labels = c("No", "Yes")),
-         target = factor(target)) |> 
-  rename(mqual = mothers_qualification,
-         dqual = fathers_qualification,
-         mjob = mothers_occupation,
-         djob = fathers_occupation,
-         admit_gr = admission_grade,
-         pr_qual = previous_qualification,
-         pr_qual_grade = previous_qualification_grade,
-         age = age_at_enrollment,
-         unemp = unemployment_rate,
-         int = international,
-       cred_1st = curricular_units_1st_sem_credited,
-       enr_1st = curricular_units_1st_sem_enrolled,
-       eval_1st = curricular_units_1st_sem_evaluations,
-       appr_1st = curricular_units_1st_sem_approved,
-       grade_1st = curricular_units_1st_sem_grade,
-       noeval_1st = curricular_units_1st_sem_without_evaluations,
-       cred_2nd = curricular_units_2nd_sem_credited,
-       enr_2nd = curricular_units_2nd_sem_enrolled,
-       eval_2nd = curricular_units_2nd_sem_evaluations,
-       appr_2nd = curricular_units_2nd_sem_approved,
-       grade_2nd = curricular_units_2nd_sem_grade,
-       noeval_2nd = curricular_units_2nd_sem_without_evaluations,
-         infl_rate = inflation_rate,
-       app_mode = application_mode,
-       app_order = application_order
-  )
+         target = factor(target))
 
 # initial skim
 student_data |> skimr::skim_without_charts()
 student_data |> names() 
-
-# target variable and predictors 
-
-numeric_variables <- sapply(student_data, is.numeric)
-correlation_matrix <- cor(student_data[, numeric_variables])
-ggcorr_plot <- ggcorr(correlation_matrix, label = TRUE)
-ggsave("figures/correlation_plot3.png", ggcorr_plot,  width = 8, height = 6)
-# what has high correlation 
-# mom and dad job
-# mom and dad qual
-# age and app mode 
-# prev qual grade and admit grade 
-
-# cred 1st and enrolled 1st
-# cred 1st and eval 1st
-# cred 1st and appr 1st
-
-# enr 1st and eval 1st
-# enr 1st and appr 1st
-
-# eval 1st and appr 1st
-
-# appr 1st and grade 1st
-
-# cred 2nd and appr 1st
-# cred 2nd and eval 1st
-# cred 2nd and enrolled 1st
-# cred 2nd and cred 1st
-
-# enr 2nd and appr 1st
-# enr 2nd and eval 1st
-# enr 2nd and enrolled 1st
-# enr 2nd and cred 1st
-# enr 2nd and cred 2nd
-
-# eval 2nd and appr 1st
-# eval 2nd and eval 1st
-# eval 2nd and enrolled 1st
-# eval 2nd and enr 2nd
-
-# appr 2nd and appr 1st
-# appr 2nd and eval 2nd
-# appr 2nd and enrolled 2nd
-# appr 2nd and grade 1st
-# appr 2nd and enr 1st
-
-# grade 2nd and appr 2nd
-# grade 2nd and grade 1st
-# grade 2nd and appr 1st
-
-# no eval 2nd and no eval 1st
-
 
 # plots 
 ggplot(student_data, aes(target)) +
@@ -210,12 +132,6 @@ student_data |>
   theme_minimal()
 # interaction between international and gender
 
-student_data |> 
-  filter(international == "Yes") |> 
-  ggplot(aes(x = gender)) +
-  geom_bar(fill = "skyblue", color = "black") +
-  theme_minimal()
-
 ggplot(student_data, aes(x = debtor, fill = scholarship_holder)) +
   geom_bar(position = "stack", width = 0.7) +
   theme_minimal() 
@@ -224,7 +140,84 @@ student_data |>
   count(target) |> 
   knitr::kable()
 
-student_data |> 
-  geom_bar(fill = "skyblue", color = "black") +
-  theme_minimal()
+# rename variables for correllation plot
+renamed_data <- student_data |> 
+  rename(mqual = mothers_qualification,
+         dqual = fathers_qualification,
+         mjob = mothers_occupation,
+         djob = fathers_occupation,
+         admit_gr = admission_grade,
+         pr_qual = previous_qualification,
+         pr_qual_grade = previous_qualification_grade,
+         age = age_at_enrollment,
+         unemp = unemployment_rate,
+         int = international,
+         cred_1st = curricular_units_1st_sem_credited,
+         enr_1st = curricular_units_1st_sem_enrolled,
+         eval_1st = curricular_units_1st_sem_evaluations,
+         appr_1st = curricular_units_1st_sem_approved,
+         grade_1st = curricular_units_1st_sem_grade,
+         noeval_1st = curricular_units_1st_sem_without_evaluations,
+         cred_2nd = curricular_units_2nd_sem_credited,
+         enr_2nd = curricular_units_2nd_sem_enrolled,
+         eval_2nd = curricular_units_2nd_sem_evaluations,
+         appr_2nd = curricular_units_2nd_sem_approved,
+         grade_2nd = curricular_units_2nd_sem_grade,
+         noeval_2nd = curricular_units_2nd_sem_without_evaluations,
+         infl_rate = inflation_rate,
+         app_mode = application_mode,
+         app_order = application_order
+  )
+
+numeric_variables <- sapply(renamed_data, is.numeric)
+correlation_matrix <- cor(renamed_data[, numeric_variables])
+ggcorr_plot <- ggcorr(correlation_matrix, label = FALSE)
+ggsave("figures/correlation_plot.png", ggcorr_plot,  width = 8, height = 6)
+
+# target variable and predictors 
+
+# what has high correlation 
+# mom and dad job
+# mom and dad qual
+# age and app mode 
+# prev qual grade and admit grade 
+
+# cred 1st and enrolled 1st
+# cred 1st and eval 1st
+# cred 1st and appr 1st
+
+# enr 1st and eval 1st
+# enr 1st and appr 1st
+
+# eval 1st and appr 1st
+
+# appr 1st and grade 1st
+
+# cred 2nd and appr 1st
+# cred 2nd and eval 1st
+# cred 2nd and enrolled 1st
+# cred 2nd and cred 1st
+
+# enr 2nd and appr 1st
+# enr 2nd and eval 1st
+# enr 2nd and enrolled 1st
+# enr 2nd and cred 1st
+# enr 2nd and cred 2nd
+
+# eval 2nd and appr 1st
+# eval 2nd and eval 1st
+# eval 2nd and enrolled 1st
+# eval 2nd and enr 2nd
+
+# appr 2nd and appr 1st
+# appr 2nd and eval 2nd
+# appr 2nd and enrolled 2nd
+# appr 2nd and grade 1st
+# appr 2nd and enr 1st
+
+# grade 2nd and appr 2nd
+# grade 2nd and grade 1st
+# grade 2nd and appr 1st
+
+# no eval 2nd and no eval 1st
 
